@@ -26,7 +26,7 @@ const materialName = ref(props.material.name);
   <VCard class="d-flex flex-row align-items-center">
     <!-- Trophy -->
     <VImg
-      :src="tabsConsole"
+      :src="imageUrl || tabsConsole"
       class="trophy ms-4"
     />
 

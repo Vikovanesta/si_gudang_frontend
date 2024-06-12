@@ -50,6 +50,7 @@ export interface Item {
   stock: number;
   max_stock: number;
   image_url: string;
+  is_in_cart: boolean;
   warehouse: Warehouse;
   material: Material;
 }
