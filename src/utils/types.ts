@@ -50,4 +50,21 @@ export interface Item {
   stock: number;
   max_stock: number;
   image_url: string;
+  warehouse: Warehouse;
+  material: Material;
+}
+
+export interface Warehouse {
+  id: number;
+  name: string;
+}
+
+export interface Material {
+  id: number;
+  name: string;
+}
+
+export interface CartItem {
+  id: number;
+  item: Item;
 }

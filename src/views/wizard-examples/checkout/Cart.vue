@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { CartItem, CheckoutData } from './types'
-import emptyCartImg from '@images/pages/empty-cart.png'
+import emptyCartImg from '@images/pages/empty-cart.png';
+import type { CartItem, CheckoutData } from './types';
 
 interface Props {
   currentStep?: number

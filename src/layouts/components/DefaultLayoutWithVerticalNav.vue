@@ -45,7 +45,7 @@ watch([
 const router = useRouter()
 // TODO: Change to actual cart route
 const goToCart = () => {
-  router.push({ name: 'app-daftar-alat' })
+  router.push({ name: 'app-keranjang' })
 }
 </script>
 
