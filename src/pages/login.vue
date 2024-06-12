@@ -2,6 +2,7 @@
 import { themeConfig } from '@themeConfig'
 import { VForm } from 'vuetify/components/VForm'
 
+import { Rule } from '@/plugins/casl/ability'
 import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-illustration-bordered-dark.png'
 import authV2LoginIllustrationBorderedLight from '@images/pages/auth-v2-login-illustration-bordered-light.png'
 import authV2LoginIllustrationDark from '@images/pages/auth-v2-login-illustration-dark.png'
@@ -41,29 +42,50 @@ const errors = ref<Record<string, string | undefined>>({
 const refVForm = ref<VForm>()
 
 const credentials = ref({
-  email: 'admin@demo.com',
-  password: 'admin',
+  email: 'admin@mail.com',
+  password: 'password',
 })
 
 const rememberMe = ref(false)
 
-// TODO: Update login to use own API
 const login = async () => {
   try {
-    const res = await $api('/auth/login', {
-      method: 'POST',
-      body: {
-        email: credentials.value.email,
-        password: credentials.value.password,
-      },
-      onResponseError({ response }) {
-        errors.value = response._data.errors
-      },
-    })
+    const body = {
+      email: credentials.value.email,
+      password: credentials.value.password,
+    };
 
-    const { accessToken, userData, userAbilityRules } = res
+    const res = await axios.post('/login', body);
+    
 
-    useCookie('userAbilityRules').value = userAbilityRules
+    const data = res.data.data
+    const accessToken = data.token
+    const userData = data.user
+    let userAbilityRules: Rule[] = []
+
+    console.log('res: ', res)
+    console.log('data: ', data)
+    console.log('token: ', accessToken)
+    console.log('user: ', userData)
+
+    if (userData.role.name == 'admin') {
+      userAbilityRules = [{
+        'action': 'manage',
+        'subject': 'all',
+      }]
+    } else if (userData.role.name == 'teacher' || userData.role.name == 'student') {
+      userAbilityRules = [{
+        'action': 'manage',
+        'subject': 'Academic',
+      }]
+    } else if (userData.role.name == 'laboran') {
+      userAbilityRules = [{
+        'action': 'manage',
+        'subject': 'Laboran',
+      }]
+    }
+
+    useCookie('userAbilityRules').value = JSON.stringify(userAbilityRules)
     ability.update(userAbilityRules)
 
     useCookie('userData').value = userData
