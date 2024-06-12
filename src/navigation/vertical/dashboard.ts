@@ -1,4 +1,13 @@
+
+// TODO: Remove this file and replace with my own navigation
+
 export default [
+  {
+    title: 'Daftar Alat',
+    icon: { icon: 'ri-hammer-fill' },
+    to: 'app-daftar-alat',
+    subject: 'Academic',
+  },
   {
     title: 'Dashboards',
     icon: { icon: 'ri-home-smile-line' },

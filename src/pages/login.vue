@@ -47,6 +47,7 @@ const credentials = ref({
 
 const rememberMe = ref(false)
 
+// TODO: Update login to use own API
 const login = async () => {
   try {
     const res = await $api('/auth/login', {
