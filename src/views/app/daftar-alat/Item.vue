@@ -23,14 +23,14 @@ const materialName = ref(props.material.name);
 </script>
 
 <template>
-  <VCard class="position-relative d-flex flex-row align-items-center">
+  <VCard class="d-flex flex-row align-items-center">
     <!-- Trophy -->
     <VImg
       :src="tabsConsole"
       class="trophy ms-4"
     />
 
-    <VCardText class="text-container">
+    <VCardText class="flex-1">
       <div class="mb-3">
         <h5 class="text-h4 text-wrap">
           {{ name }}
@@ -51,18 +51,8 @@ const materialName = ref(props.material.name);
 </template>
 
 <style lang="scss">
-.v-card {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
 .v-card .trophy {
   inline-size: 1rem;
 }
 
-.text-container {
-  flex: 1;
-}
 </style>

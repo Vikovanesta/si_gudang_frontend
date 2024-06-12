@@ -41,6 +41,12 @@ watch([
   else
     verticalNavHeaderActionAnimationName.value = val[0] ? 'rotate-180' : 'rotate-back-180'
 }, { immediate: true })
+
+const router = useRouter()
+// TODO: Change to actual cart route
+const goToCart = () => {
+  router.push({ name: 'app-daftar-alat' })
+}
 </script>
 
 <template>
@@ -64,6 +70,10 @@ watch([
           v-if="themeConfig.app.i18n.enable && themeConfig.app.i18n.langConfig?.length"
           :languages="themeConfig.app.i18n.langConfig"
         />
+
+        <IconBtn id="cart-btn" class="ms-2" @click="goToCart">
+          <VIcon icon="ri-shopping-cart-line" />
+        </IconBtn>
         <NavBarNotifications class="me-2" />
         <UserProfile />
       </div>

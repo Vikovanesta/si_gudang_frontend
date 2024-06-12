@@ -63,7 +63,7 @@ const login = async () => {
     const userData = data.user
     let userAbilityRules: Rule[] = []
 
-    console.log('res: ', res)
+    console.log('response: ', res)
     console.log('data: ', data)
     console.log('token: ', accessToken)
     console.log('user: ', userData)
@@ -169,10 +169,16 @@ const onSubmit = () => {
             variant="tonal"
           >
             <p class="text-caption mb-2 text-primary">
-              Admin Email: <strong>admin@demo.com</strong> / Pass: <strong>admin</strong>
+              Admin Email: <strong>admin@mail.com</strong> / Pass: <strong>password</strong>
+            </p>
+            <p class="text-caption mb-2 text-primary">
+              Laboran Email: <strong>laboran@mail.com</strong> / Pass: <strong>password</strong>
+            </p>
+            <p class="text-caption mb-2 text-primary">
+              Teacher Email: <strong>Teacher@mail.com</strong> / Pass: <strong>password</strong>
             </p>
             <p class="text-caption mb-0 text-primary">
-              Client Email: <strong>client@demo.com</strong> / Pass: <strong>client</strong>
+              Student Email: <strong>student@demo.com</strong> / Pass: <strong>password</strong>
             </p>
           </VAlert>
         </VCardText>
