@@ -1,3 +1,4 @@
+import { User } from '@/utils/types'
 import type { RouteRecordRaw } from 'vue-router/auto'
 
 const emailRouteComponent = () => import('@/pages/apps/email/index.vue')
@@ -11,8 +12,10 @@ export const redirects: RouteRecordRaw[] = [
     name: 'index',
     redirect: to => {
       // TODO: Get type from backend
-      const userData = useCookie<Record<string, unknown> | null | undefined>('userData')
-      const userRole = userData.value?.role
+      const userData = useCookie<User | null>('userData')
+      const userRole = userData.value?.role.name
+
+      console.log('userRole', userRole)
 
       if (userRole === 'admin')
         return { name: 'dashboards-crm' }
