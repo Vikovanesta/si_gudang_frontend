@@ -1,6 +1,6 @@
 {
-  "name": "materialize-vuejs-admin-template",
-  "version": "2.0.0",
+  "name": "manajemen-gudang-smk",
+  "version": "0.0.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -33,6 +33,7 @@
     "axios": "^1.7.2",
     "chart.js": "4.4.2",
     "cookie-es": "1.1.0",
+    "date-fns": "^3.6.0",
     "eslint-plugin-regexp": "2.5.0",
     "jwt-decode": "4.0.0",
     "mapbox-gl": "3.2.0",

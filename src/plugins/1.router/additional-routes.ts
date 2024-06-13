@@ -11,7 +11,6 @@ export const redirects: RouteRecordRaw[] = [
     path: '/',
     name: 'index',
     redirect: to => {
-      // TODO: Get type from backend
       const userData = useCookie<User | null>('userData')
       const userRole = userData.value?.role.name
 

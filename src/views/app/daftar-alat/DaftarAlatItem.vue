@@ -1,4 +1,4 @@
-// TODO: image, add functionality to add to cart
+// TODO: image
 <script setup lang="ts">
 import tabsConsole from '@images/cards/tabs-console.png';
 
@@ -66,21 +66,14 @@ const addToCart = async () => {
         Tersedia: <span class="font-weight-medium">{{ stock }}</span>
       </div>
       <div style="display: inline-block;">
-        <div v-if="isLoading" class="d-flex ms-16" style="block-size: 24px;">
-          <VProgressCircular
-          indeterminate
-          color="primary"
-          size="20"
-          />
-        </div>
-        <div v-else-if="isInCart" class="text-green cursor-default" style="block-size: 24px;">
+        <div v-if="isInCart" class="text-green cursor-default" style="block-size: 24px;">
           <VIcon icon="mdi-cart-check"></VIcon> 
           SUDAH ADA DI KERANJANG
         </div>
-        <a v-else href="#" @click.prevent="addToCart" style="block-size: 24px;">
-          <VIcon>mdi-cart-plus</VIcon>
-          <span class="text-red">TAMBAH KE KERANJANG</span>
-        </a>
+        <VBtn v-else @click.prevent="addToCart" variant="text" :loading="isLoading">
+          <v-icon>mdi-cart-plus</v-icon>
+          <span>TAMBAH KE KERANJANG</span>
+        </VBtn>
       </div>
     </VCardText>
   </VCard>

@@ -58,6 +58,7 @@ export interface Item {
 export interface CartItem {
   id: number;
   item: Item;
+  quantity: number;
   created_at: string;
   updated_at: string;
 }

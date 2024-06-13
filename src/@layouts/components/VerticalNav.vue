@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import type { Component } from 'vue'
-import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
-import { VNodeRenderer } from './VNodeRenderer'
 import { layoutConfig } from '@layouts'
 import { VerticalNavGroup, VerticalNavLink, VerticalNavSectionTitle } from '@layouts/components'
 import { useLayoutConfigStore } from '@layouts/stores/config'
 import { injectionKeyIsVerticalNavHovered } from '@layouts/symbols'
 import type { NavGroup, NavLink, NavSectionTitle, VerticalNavItems } from '@layouts/types'
+import type { Component } from 'vue'
+import { PerfectScrollbar } from 'vue3-perfect-scrollbar'
+import { VNodeRenderer } from './VNodeRenderer'
 
 interface Props {
   tag?: string | Component
@@ -84,7 +84,8 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
               v-show="!hideTitleAndIcon"
               class="app-logo-title leading-normal"
             >
-              {{ layoutConfig.app.title }}
+              <p class="ma-0">Sistem Informasi</p>
+              <p class="ma-0">Peminjaman Alat & Gudang</p>
             </h1>
           </Transition>
         </RouterLink>
@@ -147,7 +148,7 @@ const hideTitleAndIcon = configStore.isVerticalNavMini(isHovered)
   column-gap: 0.5rem;
 
   .app-logo-title {
-    font-size: 1.25rem;
+    font-size: 0.75rem;
     font-weight: 600;
     line-height: 1.75rem;
     text-transform: capitalize;
