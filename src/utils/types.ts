@@ -55,6 +55,13 @@ export interface Item {
   material: Material;
 }
 
+export interface CartItem {
+  id: number;
+  item: Item;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Warehouse {
   id: number;
   name: string;

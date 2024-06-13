@@ -18,6 +18,7 @@ const fetchItems = async (page = 1) => {
     const response = await axios.get('/items?page_size=6&page=' + page)
     items.value = response.data.data
     pagination.value = response.data.meta
+    console.log('Response: ', response)
     console.log('items: ', items)
     console.log('pagination: ', pagination)
   } catch (error) {

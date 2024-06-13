@@ -1,35 +1,17 @@
 <script setup lang="ts">
-import { Item } from '@/utils/types';
+import { CartItem } from '@/utils/types';
 import tabsConsole from '@images/cards/tabs-console.png';
 import emptyCartImg from '@images/pages/empty-cart.png';
-import type { CartItem, CheckoutData } from './types';
-
-interface Props {
-  currentStep?: number
-  checkoutData: CheckoutData
-  items: Item[]
-}
-
-interface Emit {
-  (e: 'update:checkout-data', value: CheckoutData): void
-}
-
-const props = defineProps<Props>()
-
-const emit = defineEmits<Emit>()
-
-const checkoutCartDataLocal = ref(props.checkoutData)
 
 // remove item from cart
 const removeItem = (item: CartItem) => {
-  checkoutCartDataLocal.value.cartItems = checkoutCartDataLocal.value.cartItems.filter(i => i.id !== item.id)
+  // checkoutCartDataLocal.value.cartItems = checkoutCartDataLocal.value.cartItems.filter(i => i.id !== item.id)
 }
 
 const updateCartData = () => {
-  checkoutCartDataLocal.value.orderAmount = totalCost.value
-  emit('update:checkout-data', checkoutCartDataLocal.value)
+  // checkoutCartDataLocal.value.orderAmount = totalCost.value
+  // emit('update:checkout-data', checkoutCartDataLocal.value)
 }
-
 const borrowDate = ref('')
 const returnDate = ref('')
 
@@ -44,36 +26,58 @@ const schoolSubjects = [
   { id: 5, name: 'ok' },
 ]
 
+const cartItems = ref<CartItem[]>([])
+const isLoading = ref<boolean>(false)
+
+const cartLength = computed(() => cartItems.value.length)
+
+const fetchCartItems = async () => {
+  isLoading.value = true
+  try {
+    const response = await axios.get('/me/carts')
+    cartItems.value = response.data.data
+    console.log('Response: ', response)
+    console.log('Cart items: ', cartItems)
+    console.log('Len: ', cartLength.value)
+  } catch (error) {
+    console.error('Failed to fetch items:', error)
+  } finally {
+    isLoading.value = false
+  }
+};
+
+onMounted(() => {
+  fetchCartItems()
+});
 </script>
 
 <template>
-  <VRow v-if="checkoutCartDataLocal">
+  <VRow v-if="cartLength">
     <VCol
       cols="12"
       md="8"
     >
 
       <h5 class="text-h5 my-4">
-        Keranjang Alat ({{ checkoutCartDataLocal.cartItems.length }} Item)
+        Keranjang Alat ({{ cartLength }} Item)
       </h5>
 
       <!-- 👉 Cart items -->
       <div
-        v-if="checkoutCartDataLocal.cartItems.length"
+        v-if="cartLength"
         class="border rounded-xl"
       >
         <template
-          v-for="item in items"
-          :key="item.id"
+          v-for="cartItem in cartItems"
+          :key="cartItem.id"
         >
           <div
             class="d-flex align-center gap-4 pa-5 position-relative flex-column flex-sm-row"
-            :class="index ? 'border-t' : ''"
           >
             <IconBtn
               class="checkout-item-remove-btn"
               color="disabled"
-              @click="removeItem(item)"
+              @click=""
             >
               <VIcon
                 size="18"
@@ -84,7 +88,7 @@ const schoolSubjects = [
             <div>
               <VImg
                 width="140"
-                :src="item.image_url || tabsConsole"
+                :src="cartItem.item.image_url || tabsConsole"
               />
             </div>
 
@@ -94,18 +98,18 @@ const schoolSubjects = [
             >
               <div>
                 <h6 class="text-h6 mb-2">
-                  {{ item.name }}
+                  {{ cartItem.item.name }}
                 </h6>
                 <div class="d-flex align-center text-no-wrap gap-4 text-base">
                   <div>
                     <span class="text-disabled me-2">Tersedia:</span>
-                    <span class="text-primary">{{ item.stock }}</span>
+                    <span class="text-primary">{{ cartItem.item.stock }}</span>
                   </div>
                   <VChip
                     :color="'success'"
                     size="small"
                   >
-                    {{ item.warehouse.name }}
+                    {{ cartItem.item.warehouse.name }}
                   </VChip>
                 </div>
 
@@ -128,7 +132,7 @@ const schoolSubjects = [
                   :class="$vuetify.display.smAndUp ? 'gap-4' : 'gap-2'"
                 >
                   <p class="text-base mb-0">
-                    <span>Material: {{ item.material.name }}</span>
+                    <span>Material: {{ cartItem.item.material.name }}</span>
                   </p>
                 </div>
               </div>
@@ -234,7 +238,7 @@ const schoolSubjects = [
       <VBtn
         block
         class="mt-4"
-        @click="nextStep"
+        @click=""
       >
         Ajukan Peminjaman
       </VBtn>
