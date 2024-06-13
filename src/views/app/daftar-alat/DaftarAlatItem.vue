@@ -6,8 +6,9 @@ const props = defineProps({
   id: Number,
   name: String,
   stock: Number,
-  maxStock: Number,
-  imageUrl: String,
+  max_stock: Number,
+  image_url: String,
+  is_in_cart: Boolean,
   warehouse: {
     type: Object,
     default: () => ({}),
@@ -20,13 +21,32 @@ const props = defineProps({
 
 const warehouseName = ref(props.warehouse.name);
 const materialName = ref(props.material.name);
+const isInCart = ref(props.is_in_cart);
+const isLoading = ref<boolean>(false)
+
+console.log('maxStock:', props.max_stock);
+
+const addToCart = async () => {
+  isLoading.value = true
+  try {
+    const response = await axios.post('/me/carts', { item_id: props.id });
+
+    console.log('Item added to cart:', response.data);
+    
+    isInCart.value = true;
+  } catch (error) {
+    console.error('Error adding item to cart:', error);
+  } finally {
+    isLoading.value = false
+  }
+}
 </script>
 
 <template>
   <VCard class="d-flex flex-row align-items-center">
     <!-- Trophy -->
     <VImg
-      :src="imageUrl || tabsConsole"
+      :src="image_url || tabsConsole"
       class="trophy ms-4"
     />
 
@@ -39,13 +59,29 @@ const materialName = ref(props.material.name);
           {{ warehouseName }}
         </div>
       </div>
-      <h4 class="text-h5">
-        Material: <b>{{ materialName }}</b>
+      <h4 class="text-h5 font-weight-regular">
+        Material: <span class="font-weight-medium">{{ materialName }}</span>
       </h4>
-      <div class="text-h5 mb-3">
-        Tersedia: <b>{{ stock }}</b>
+      <div class="text-h5 font-weight-regular mb-3">
+        Tersedia: <span class="font-weight-medium">{{ stock }}</span>
       </div>
-      <a href="#"> <VIcon icon="mdi-cart-plus"></VIcon> TAMBAH KE KERANJANG</a>
+      <div style="display: inline-block;">
+        <div v-if="isLoading" class="d-flex ms-16" style="block-size: 24px;">
+          <VProgressCircular
+          indeterminate
+          color="primary"
+          size="20"
+          />
+        </div>
+        <div v-else-if="isInCart" class="text-green cursor-default" style="block-size: 24px;">
+          <VIcon icon="mdi-cart-check"></VIcon> 
+          SUDAH ADA DI KERANJANG
+        </div>
+        <a v-else href="#" @click.prevent="addToCart" style="block-size: 24px;">
+          <VIcon>mdi-cart-plus</VIcon>
+          <span class="text-red">TAMBAH KE KERANJANG</span>
+        </a>
+      </div>
     </VCardText>
   </VCard>
 </template>
@@ -53,6 +89,10 @@ const materialName = ref(props.material.name);
 <style lang="scss">
 .v-card .trophy {
   inline-size: 1rem;
+}
+
+.text-green {
+  color: rgb(54, 217, 59);
 }
 
 </style>

@@ -175,7 +175,7 @@ const onSubmit = () => {
               Laboran Email: <strong>laboran@mail.com</strong> / Pass: <strong>password</strong>
             </p>
             <p class="text-caption mb-2 text-primary">
-              Teacher Email: <strong>Teacher@mail.com</strong> / Pass: <strong>password</strong>
+              Teacher Email: <strong>teacher@mail.com</strong> / Pass: <strong>password</strong>
             </p>
             <p class="text-caption mb-0 text-primary">
               Student Email: <strong>student@demo.com</strong> / Pass: <strong>password</strong>

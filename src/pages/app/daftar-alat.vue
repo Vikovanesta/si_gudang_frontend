@@ -20,7 +20,6 @@ const fetchItems = async (page = 1) => {
     pagination.value = response.data.meta
     console.log('items: ', items)
     console.log('pagination: ', pagination)
-    console.log('page: ', page)
   } catch (error) {
     console.error('Failed to fetch items:', error)
   } finally {
