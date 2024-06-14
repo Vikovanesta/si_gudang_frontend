@@ -52,7 +52,7 @@ const sendRequest = async () => {
   try {
     isSubmitting.value = true;
     const borrowedItems = JSON.stringify(cartItems.value.map(item => ({
-      item_id: item.id,
+      item_id: item.item.id,
       quantity: item.quantity || 1,
     })))
 
@@ -260,6 +260,7 @@ onMounted(() => {
               placeholder="Tanggal peminjaman"
               :rules="[v => !!v || 'Tanggal peminjaman harus diisi']"
               :config="{ enableTime: true, dateFormat: 'Y-m-d H:i' }"
+              :append-inner-icon="'ri-calendar-line'"
               class="my-4"
               required
             />
@@ -270,6 +271,7 @@ onMounted(() => {
               placeholder="Tanggal pengembalian"
               :rules="[v => !!v || 'Tanggal pengembalian harus diisi']"
               :config="{ enableTime: true, dateFormat: 'Y-m-d H:i' }"
+              :append-inner-icon="'ri-calendar-line'"
               class="my-4"
               aria-required="true"
             />
