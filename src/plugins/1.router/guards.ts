@@ -27,10 +27,12 @@ export const setupGuards = (router: _RouterTyped<RouteNamedMap & { [key: string]
       if (isLoggedIn)
         return '/'
       else
+        console.log('Unauthenticated only page')
         return undefined
     }
 
     if (!canNavigate(to) && to.matched.length) {
+      console.log('Unauthorized access attempt')
       /* eslint-disable indent */
       return isLoggedIn
         ? { name: 'not-authorized' }

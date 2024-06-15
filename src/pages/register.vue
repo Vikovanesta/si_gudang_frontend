@@ -1,23 +1,14 @@
 <script setup lang="ts">
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
-import { themeConfig } from '@themeConfig'
+import { Class } from '@/utils/types';
+import registerMultiStepsIllustration from '@images/pages/register-multi-step-illustration.png';
+import { VNodeRenderer } from '@layouts/components/VNodeRenderer';
+import { themeConfig } from '@themeConfig';
+import { useField, useForm } from 'vee-validate';
+import * as yup from 'yup';
 
-import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
-import authV2RegisterIllustrationBorderedDark from '@images/pages/auth-v2-register-illustration-bordered-dark.png'
-import authV2RegisterIllustrationBorderedLight from '@images/pages/auth-v2-register-illustration-bordered-light.png'
-import authV2RegisterIllustrationDark from '@images/pages/auth-v2-register-illustration-dark.png'
-import authV2RegisterIllustrationLight from '@images/pages/auth-v2-register-illustration-light.png'
-import authV2RegisterMaskDark from '@images/pages/auth-v2-register-mask-dark.png'
-import authV2RegisterMaskLight from '@images/pages/auth-v2-register-mask-light.png'
-
-const authThemeMask = useGenerateImageVariant(authV2RegisterMaskLight, authV2RegisterMaskDark)
-
-const authThemeImg = useGenerateImageVariant(
-  authV2RegisterIllustrationLight,
-  authV2RegisterIllustrationDark,
-  authV2RegisterIllustrationBorderedLight,
-  authV2RegisterIllustrationBorderedDark,
-  true)
+const currentStep = ref<number>(0)
+const isPasswordVisible = ref(false)
+const isConfirmPasswordVisible = ref(false)
 
 definePage({
   meta: {
@@ -26,14 +17,96 @@ definePage({
   },
 })
 
-const form = ref({
-  username: '',
-  email: '',
-  password: '',
-  privacyPolicies: false,
+const items = [
+  {
+    title: 'Akun',
+    subtitle: 'Detail Akun',
+  },
+  {
+    title: 'Personal',
+    subtitle: 'Informasi Pribadi',
+  },
+]
+
+const schemas = [
+  yup.object({
+    email: yup.string().email('Harus berupa e-mail yang valid.').required('Email wajib diisi.'),
+    phone: yup.string().matches(/^[0-9]+$/, 'Nomor telepon hanya boleh terdiri dari angka.').min(9, 'Nomor telepon harus terdiri dari minimal 9 digit.').required('Nomor telepon wajib diisi.'),
+    password: yup.string().min(8, 'Kata sandi harus terdiri dari minimal 8 karakter.').required('Kata sandi wajib diisi.'),
+    confirm_password: yup.string().oneOf([yup.ref('password')], 'Konfirmasi kata sandi tidak sesuai.').required('Konfirmasi kata sandi wajib diisi.'),
+  }),
+  yup.object({
+    name: yup.string().required('Nama wajib diisi.'),
+    nisn: yup.string().required('NISN wajib diisi.'),
+    class_id: yup.string().required('Kelas wajib dipilih.'),
+    date_of_birth: yup.date().required('Tanggal lahir wajib diisi.'),
+    year_in: yup.number().min(1900, 'Tahun masuk minimal adalah 1900.').required('Tahun masuk wajib diisi.'),
+  }),
+]
+
+const currentSchema = computed(() => schemas[currentStep.value])
+
+const form = useForm({
+  validationSchema: currentSchema,
+  validateOnMount: false,
+});
+
+const { handleSubmit, validate } = form;
+
+const email = useField('email')
+const phone = useField('phone')
+const password = useField('password')
+const confirmPassword = useField('confirm_password')
+const name = useField('name')
+const nisn = useField('nisn')
+const classId = useField('class_id')
+const dateOfBirth = useField('date_of_birth')
+const yearIn = useField('year_in')
+
+const classOptions = ref<Class[]>([])
+const isSubmitting = ref(false)
+const isSuccess = ref(false)
+const router = useRouter()
+
+
+const fetchClassOptions = async() => {
+  try {
+    const response = await axios.get('/classes')
+    classOptions.value = response.data.data
+  } catch (error) {
+    console.error(error)
+    }
+}
+
+const onSubmit = handleSubmit(async(values) => {
+  isSubmitting.value = true;
+  try {
+    const response = await axios.post('/register/students', values);
+    if (response.status === 201) {
+      isSuccess.value = true;
+    }
+  } catch (error) {
+    console.error(error);
+  } finally {
+    isSubmitting.value = false;
+  }
 })
 
-const isPasswordVisible = ref(false)
+const nextStep = async () => {
+  const isValid = await validate();
+  console.log('Schema:', currentSchema.value)
+  console.log('Values:', form.values)
+  console.log('isValid:', isValid);
+  if (isValid.valid) {
+    currentStep.value++;
+    console.log('Schema:', currentSchema.value)
+  }
+}
+
+onMounted(() => {
+  fetchClassOptions()
+})
+
 </script>
 
 <template>
@@ -51,139 +124,247 @@ const isPasswordVisible = ref(false)
     class="auth-wrapper"
   >
     <VCol
-      md="8"
-      class="d-none d-md-flex align-center justify-center position-relative"
+      md="4"
+      class="d-none d-md-flex align-center"
     >
-      <!-- here your illustrator -->
-      <div class="d-flex align-center justify-center pa-10">
-        <img
-          :src="authThemeImg"
-          class="auth-illustration w-100"
-          alt="auth-illustration"
-        >
-      </div>
+      <!-- here your illustration -->
       <VImg
-        :src="authThemeMask"
-        class="d-none d-md-flex auth-footer-mask"
-        alt="auth-mask"
+        :src="registerMultiStepsIllustration"
+        class="auth-illustration"
+        height="560px"
       />
     </VCol>
 
     <VCol
       cols="12"
-      md="4"
-      class="auth-card-v2 d-flex align-center justify-center"
+      md="8"
+      class="auth-card-v2 d-flex align-center justify-center pa-10"
       style="background-color: rgb(var(--v-theme-surface));"
     >
       <VCard
         flat
-        :max-width="500"
-        class="mt-12 mt-sm-0 pa-5 pa-lg-7"
+        class="mt-12"
       >
-        <VCardText>
-          <h4 class="text-h4 mb-1">
-            Adventure starts here 🚀
-          </h4>
-          <p class="mb-0">
-            Make your app management easy and fun!
-          </p>
-        </VCardText>
+        <AppStepper
+          v-model:current-step="currentStep"
+          :items="items"
+          :direction="$vuetify.display.smAndUp ? 'horizontal' : 'vertical'"
+          class="mb-12"
+        />
 
-        <VCardText>
-          <VForm @submit.prevent="() => {}">
-            <VRow>
-              <!-- Username -->
-              <VCol cols="12">
-                <VTextField
-                  v-model="form.username"
-                  autofocus
-                  label="Username"
-                  placeholder="Johndoe"
-                />
-              </VCol>
+        <VWindow
+          v-model="currentStep"
+          class="disable-tab-transition responsive-window"
+        >
+          <VForm
+            :validation-schema="currentSchema"
+            keep-values
+          >
+            <VWindowItem>
+              <h4 class="text-h4 mb-1">
+                Informasi Akun
+              </h4>
+              <p class="text-body-1 mb-5">
+                Masukkan detail akun Anda
+              </p>
 
-              <!-- email -->
-              <VCol cols="12">
-                <VTextField
-                  v-model="form.email"
-                  label="Email"
-                  type="email"
-                  placeholder="johndoe@email.com"
-                />
-              </VCol>
-
-              <!-- password -->
-              <VCol cols="12">
-                <VTextField
-                  v-model="form.password"
-                  label="Password"
-                  placeholder="············"
-                  :type="isPasswordVisible ? 'text' : 'password'"
-                  :append-inner-icon="isPasswordVisible ? 'ri-eye-off-line' : 'ri-eye-line'"
-                  @click:append-inner="isPasswordVisible = !isPasswordVisible"
-                />
-
-                <div class="d-flex align-center my-6">
-                  <VCheckbox
-                    id="privacy-policy"
-                    v-model="form.privacyPolicies"
-                    inline
-                  />
-                  <VLabel
-                    for="privacy-policy"
-                    style="opacity: 1;"
-                  >
-                    <span class="me-1 text-high-emphasis">I agree to</span>
-                    <a
-                      href="javascript:void(0)"
-                      class="text-primary"
-                    >privacy policy & terms</a>
-                  </VLabel>
-                </div>
-
-                <VBtn
-                  block
-                  type="submit"
-                >
-                  Sign up
-                </VBtn>
-              </VCol>
-
-              <!-- create account -->
-              <VCol cols="12">
-                <div class="text-center text-base">
-                  <span class="d-inline-block">Already have an account?</span> <RouterLink
-                    class="text-primary d-inline-block"
-                    :to="{ name: 'login' }"
-                  >
-                    Sign in instead
-                  </RouterLink>
-                </div>
-              </VCol>
-
-              <VCol cols="12">
-                <div class="d-flex align-center">
-                  <VDivider />
-                  <span class="mx-4 text-high-emphasis">or</span>
-                  <VDivider />
-                </div>
-              </VCol>
-
-              <!-- auth providers -->
-              <VCol
+              <VRow>
+                
+                <VCol
                 cols="12"
-                class="text-center"
-              >
-                <AuthProvider />
-              </VCol>
-            </VRow>
+                md="6"
+                >
+                  <VTextField
+                    v-model="email.value.value"
+                    :error-messages="email.errorMessage.value"
+                    type="email"
+                    label="Email"
+                    placeholder="johndoe@email.com"
+                  />
+                </VCol>
+
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <VTextField
+                    v-model="phone.value.value"
+                    :error-messages="phone.errorMessage.value"
+                    label="Nomor telepon"
+                    placeholder="081374843340"
+                  />
+                </VCol>
+
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <VTextField
+                    v-model="password.value.value"
+                    :error-messages="password.errorMessage.value"
+                    label="Kata sandi"
+                    placeholder="Kata sandi"
+                    :type="isPasswordVisible ? 'text' : 'password'"
+                    :append-inner-icon="isPasswordVisible ? 'ri-eye-off-line' : 'ri-eye-line'"
+                    @click:append-inner="isPasswordVisible = !isPasswordVisible"
+                  />
+                </VCol>
+
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <VTextField
+                    v-model="confirmPassword.value.value"
+                    :error-messages="confirmPassword.errorMessage.value"
+                    label="Konfirmasi kata sandi"
+                    placeholder="Konfirmasi kata sandi"
+                    :type="isConfirmPasswordVisible ? 'text' : 'password'"
+                    :append-inner-icon="isConfirmPasswordVisible ? 'ri-eye-off-line' : 'ri-eye-line'"
+                    @click:append-inner="isConfirmPasswordVisible = !isConfirmPasswordVisible"
+                  />
+                </VCol>
+
+              </VRow>
+            </VWindowItem>
+
+            <VWindowItem>
+              <h4 class="text-h4 mb-1">
+                Informasi Personal
+              </h4>
+              <p class="text-body-1 mb-5">
+                Masukkan detail informasi personal Anda
+              </p>
+
+              <VRow>
+                <VCol
+                  cols="12"
+                >
+                  <VTextField
+                    v-model="name.value.value"
+                    :error-messages="name.errorMessage.value"
+                    label="Nama"
+                    placeholder="John Budiharto"
+                  />
+                </VCol>
+
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <VTextField
+                    v-model="nisn.value.value"
+                    :error-messages="nisn.errorMessage.value"
+                    label="Nisn"
+                    placeholder="1349133439"
+                  />
+                </VCol>
+
+                <VCol
+                  cols="12"
+                  md="6"
+                >
+                  <VSelect
+                    v-model="classId.value.value"
+                    :error-messages="classId.errorMessage.value"
+                    label="Kelas"
+                    placeholder="Pilih kelas"
+                    :items="classOptions"
+                    :item-title="'name'"
+                    :item-value="'id'"
+                  />
+                </VCol>
+
+                <VCol cols="12" md="6">
+                  <AppDateTimePicker
+                    v-model="dateOfBirth.value.value"
+                    :error-messages="dateOfBirth.errorMessage.value"
+                    label="Tanggal lahir"
+                    placeholder="Tanggal lahir"
+                    :config="{ dateFormat: 'Y-m-d' }"
+                    :append-inner-icon="'ri-calendar-line'"
+                  />
+                </VCol>
+
+                <VCol cols="12" md="6">
+                  <VTextField
+                    v-model="yearIn.value.value"
+                    :error-messages="yearIn.errorMessage.value"
+                    type="number"
+                    min="1900"
+                    label="Tahun masuk"
+                    placeholder="Tahun masuk"
+                    :append-inner-icon="'ri-calendar-line'"
+                  />
+                </VCol>
+
+              </VRow>
+            </VWindowItem>
           </VForm>
-        </VCardText>
+        </VWindow>
+
+        <div class="d-flex flex-wrap justify-space-between justify-center gap-x-4 gap-y-2 my-6">
+          <VBtn
+            color="secondary"
+            variant="outlined"
+            :disabled="currentStep === 0"
+            @click="currentStep--"
+          >
+            <VIcon
+              icon="ri-arrow-left-line"
+              start
+              class="flip-in-rtl"
+            />
+            Sebelumnya
+          </VBtn>
+
+          <VBtn
+            v-if="items.length - 1 === currentStep"
+            color="success"
+            append-icon="ri-arrow-right-line"
+            @click="onSubmit"
+            :loading="isSubmitting"
+          >
+            Daftar
+          </VBtn>
+
+          <VBtn
+            v-else
+            @click="nextStep"
+          >
+            Selanjutnya
+
+            <VIcon
+              icon="ri-arrow-right-line"
+              end
+              class="flip-in-rtl"
+            />
+          </VBtn>
+        </div>
       </VCard>
     </VCol>
   </VRow>
+  <VSnackbar
+      v-model="isSuccess"
+      location="top center"
+      variant="flat"
+      color="success"
+      :timeout="5000"
+    >
+      Pendaftaran Berhasil diajukan, Mohon tunggu konfirmasi dari laboran.
+    </VSnackbar>
 </template>
 
 <style lang="scss">
 @use "@core/scss/template/pages/page-auth.scss";
+
+.responsive-window {
+  max-inline-size: 685px;
+}
+
+@media (min-width: 960px) {
+  .responsive-window {
+    min-inline-size: 685px;
+  }
+}
 </style>
