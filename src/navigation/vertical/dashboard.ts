@@ -8,6 +8,14 @@ export default [
     to: 'app-daftar-alat',
     subject: 'Academic',
   },
+
+  {
+    title: 'Permintaan Peminjaman',
+    icon: { icon: 'ri-hammer-fill' },
+    to: 'app-permintaan-peminjaman',
+    subject: 'Laboran',
+  },
+  
   {
     title: 'Dashboards',
     icon: { icon: 'ri-home-smile-line' },

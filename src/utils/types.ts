@@ -77,3 +77,53 @@ export interface CartItem {
   id: number;
   item: Item;
 }
+
+export interface BorrowingRequest {
+  id: number;
+  purpose: string;
+  status: string;
+  is_revised: boolean;
+  created_at: string;
+  updated_at: string;
+  borrowed_items_count: number;
+  details: BorrowingRequestDetail[];
+  sender: User;
+  handler: User;
+  school_subject: SchoolSubject;
+}
+
+export interface SchoolSubject {
+    id: number;
+    name: string;
+}
+
+export interface BorrowingRequestDetail {
+  id: number;
+  start_date: string;
+  end_date: string;
+  note: string;
+  is_revision: boolean;
+  status: BorrowingRequestStatus;
+  borrowed_items: BorrowedItem[];
+}
+
+export interface BorrowingRequestStatus {
+  id: number;
+  name: string;
+}
+
+export interface BorrowedItem {
+  id: number;
+  quantity: number;
+  returned_quantity: number;
+  borrowed_at: string;
+  returned_at: string;
+  is_cancelled: boolean;
+  status: BorrowingStatus;
+  item: Item;
+}
+
+export interface BorrowingStatus {
+  id: number;
+  name: string;
+}

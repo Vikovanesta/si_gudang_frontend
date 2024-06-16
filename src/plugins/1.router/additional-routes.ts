@@ -21,7 +21,7 @@ export const redirects: RouteRecordRaw[] = [
       if (userRole === 'student' || userRole === 'teacher' )
         return { name: 'app-daftar-alat' }
       if (userRole === 'laboran')
-        return {name: 'access-control'}
+        return {name: 'app-permintaan-peminjaman'}
 
       return { name: 'login', query: to.query }
     },
