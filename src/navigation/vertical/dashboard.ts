@@ -12,7 +12,7 @@ export default [
   {
     title: 'Permintaan Peminjaman',
     icon: { icon: 'ri-hammer-fill' },
-    to: 'app-permintaan-peminjaman',
+    to: 'app-permintaan-peminjaman-list',
     subject: 'Laboran',
   },
   

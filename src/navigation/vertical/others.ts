@@ -5,7 +5,7 @@ export default [
     icon: { icon: 'ri-shield-line' },
     to: 'access-control',
     action: 'read',
-    subject: 'Laboran',
+    subject: 'AccessControl',
   },
   {
     title: 'Nav Levels',

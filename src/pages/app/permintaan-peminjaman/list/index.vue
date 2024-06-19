@@ -146,7 +146,7 @@ onMounted(() => {
       >
         <!-- id -->
         <template #item.id="{ item }">
-          <RouterLink :to="{ name: 'apps-invoice-preview-id', params: { id: item.id } }">
+          <RouterLink :to="{ name: 'app-permintaan-peminjaman-detail-id', params: { id: item.id } }">
             #{{ item.id }}
           </RouterLink>
         </template>
@@ -203,7 +203,7 @@ onMounted(() => {
           <div class="text-no-wrap">
             <IconBtn
               size="small"
-              :to="{ name: 'apps-invoice-preview-id', params: { id: item.id } }"
+              :to="{ name: 'app-permintaan-peminjaman-detail-id', params: { id: item.id } }"
             >
               <VIcon icon="ri-eye-line" />
             </IconBtn>
