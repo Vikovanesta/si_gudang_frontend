@@ -25,36 +25,6 @@ const route = useRoute();
 const router = useRouter();
 const borrowedItemsLength = computed(() => borrowedItems.value.length);
 
-// const sendRequest = async () => {
-
-//   try {
-//     isSubmitting.value = true;
-//     const borrowedItems = JSON.stringify(cartItems.value.map(item => ({
-//       item_id: item.item.id,
-//       quantity: item.quantity || 1,
-//     })))
-
-//     const response = await axios.post('/borrowing-requests', {
-//       purpose: purpose.value,
-//       start_date: format(new Date(borrowDate.value), 'yyyy-MM-dd HH:mm:ss'),
-//       end_date: format(new Date(returnDate.value), 'yyyy-MM-dd HH:mm:ss'),
-//       borrowed_items: borrowedItems,
-//     });
-
-//     console.log('Response:', response.data);
-
-//     if (response.status === 201) {
-//       isSuccess.value = true; // Set success message
-//     }
-
-//   } catch (error) {
-//     console.error('Error:', error);
-//     // Handle error and possibly show error message
-//   } finally {
-//     isSubmitting.value = false;
-//   }
-//   };
-
 const sendRequest = async (status:number) => {
   isSubmitting.value = true;
   try {

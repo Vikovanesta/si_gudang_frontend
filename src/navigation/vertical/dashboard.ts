@@ -1,6 +1,4 @@
 
-// TODO: Remove this file and replace with my own navigation
-
 export default [
   {
     title: 'Daftar Alat',
@@ -8,11 +6,37 @@ export default [
     to: 'app-daftar-alat',
     subject: 'Academic',
   },
+  {
+    title: 'Status Pengajuan Alat',
+    icon: { icon: 'ri-information-fill' },
+    subject: 'Academic',
+  },
+  {
+    title: 'Riwayat Peminjaman',
+    icon: { icon: 'ri-time-fill' },
+    subject: 'Academic',
+  },
 
   {
     title: 'Permintaan Peminjaman',
     icon: { icon: 'ri-hammer-fill' },
     to: 'app-permintaan-peminjaman-list',
+    subject: 'Laboran',
+  },
+  {
+    title: 'Riwayat Peminjaman',
+    icon: { icon: 'ri-history-fill' },
+    subject: 'Laboran',
+  },
+  {
+    title: 'Manajemen Alat',
+    icon: { icon: 'ri-home-8-fill' },
+    subject: 'Laboran',
+  },
+  {
+    title: 'Konfirmasi Akun Siswa',
+    icon: { icon: 'ri-account-circle-fill' },
+    to: 'app-pengajuan-akun-list',
     subject: 'Laboran',
   },
   
