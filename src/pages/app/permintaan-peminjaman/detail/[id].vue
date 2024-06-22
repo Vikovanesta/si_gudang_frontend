@@ -60,8 +60,8 @@ const sendRequest = async (status:number) => {
   try {
     const response = await axios.post(`/borrowing-requests/${route.params.id}?_method=PUT`, {
       status: status,
-      start_date: format(new Date(borrowDate.value), 'yyyy-MM-dd HH:mm:ss'),
-      end_date: format(new Date(returnDate.value), 'yyyy-MM-dd HH:mm:ss'),
+      start_date: new Date(new Date(borrowDate.value).getTime()).toISOString().replace('T', ' ').substring(0, 19),
+      end_date: new Date(new Date(returnDate.value).getTime()).toISOString().replace('T', ' ').substring(0, 19),
       note: '-',
       borrowed_items: JSON.stringify(borrowedItems.value.map(item => ({
         item_id: item.item.id,

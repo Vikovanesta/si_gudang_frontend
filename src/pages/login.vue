@@ -178,7 +178,7 @@ const onSubmit = () => {
               Teacher Email: <strong>teacher@mail.com</strong> / Pass: <strong>password</strong>
             </p>
             <p class="text-caption mb-0 text-primary">
-              Student Email: <strong>student@demo.com</strong> / Pass: <strong>password</strong>
+              Student Email: <strong>student@mail.com</strong> / Pass: <strong>password</strong>
             </p>
           </VAlert>
         </VCardText>
