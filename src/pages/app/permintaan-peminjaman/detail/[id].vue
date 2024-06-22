@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { BorrowedItem, BorrowingRequest, BorrowingRequestDetail, CartItem } from '@/utils/types';
+import { BorrowedItem, BorrowingRequest, BorrowingRequestDetail } from '@/utils/types';
 import tabsConsole from '@images/cards/tabs-console.png';
 import emptyCartImg from '@images/pages/empty-cart.png';
-import { format } from 'date-fns';
+import { format, fromZonedTime, toZonedTime } from 'date-fns-tz';
 import { useRoute, useRouter } from 'vue-router';
 
 definePage({
@@ -14,11 +14,10 @@ definePage({
 const borrowingRequest = ref<BorrowingRequest | null>(null);
 const borrowingRequestDetail = ref<BorrowingRequestDetail | null>(null);
 const borrowedItems = ref<BorrowedItem[]>([]);
-const cartItems = ref<CartItem[]>([]);
 const isLoading = ref<boolean>(false);
 const isSubmitting = ref<boolean>(false);
 const isSuccess = ref<boolean>(false);
-const formRef = ref<any>(null);
+const isInputDisabled = ref<boolean>(false);
 const purpose = ref('');
 const borrowDate = ref('');
 const returnDate = ref('');
@@ -26,70 +25,116 @@ const route = useRoute();
 const router = useRouter();
 const borrowedItemsLength = computed(() => borrowedItems.value.length);
 
-const sendRequest = async () => {
-  if (!formRef.value || !(await formRef.value.validate())) {
-    console.log('Form is not valid');
-    return;
-  }
+// const sendRequest = async () => {
 
+//   try {
+//     isSubmitting.value = true;
+//     const borrowedItems = JSON.stringify(cartItems.value.map(item => ({
+//       item_id: item.item.id,
+//       quantity: item.quantity || 1,
+//     })))
+
+//     const response = await axios.post('/borrowing-requests', {
+//       purpose: purpose.value,
+//       start_date: format(new Date(borrowDate.value), 'yyyy-MM-dd HH:mm:ss'),
+//       end_date: format(new Date(returnDate.value), 'yyyy-MM-dd HH:mm:ss'),
+//       borrowed_items: borrowedItems,
+//     });
+
+//     console.log('Response:', response.data);
+
+//     if (response.status === 201) {
+//       isSuccess.value = true; // Set success message
+//     }
+
+//   } catch (error) {
+//     console.error('Error:', error);
+//     // Handle error and possibly show error message
+//   } finally {
+//     isSubmitting.value = false;
+//   }
+//   };
+
+const sendRequest = async (status:number) => {
+  isSubmitting.value = true;
   try {
-    isSubmitting.value = true;
-    const borrowedItems = JSON.stringify(cartItems.value.map(item => ({
-      item_id: item.item.id,
-      quantity: item.quantity || 1,
-    })))
-
-    const response = await axios.post('/borrowing-requests', {
-      purpose: purpose.value,
+    const response = await axios.post(`/borrowing-requests/${route.params.id}?_method=PUT`, {
+      status: status,
       start_date: format(new Date(borrowDate.value), 'yyyy-MM-dd HH:mm:ss'),
       end_date: format(new Date(returnDate.value), 'yyyy-MM-dd HH:mm:ss'),
-      borrowed_items: borrowedItems,
+      note: '-',
+      borrowed_items: JSON.stringify(borrowedItems.value.map(item => ({
+        item_id: item.item.id,
+        quantity: item.quantity || 1,
+      })))
     });
-
-    console.log('Response:', response.data);
-
     if (response.status === 201) {
-      isSuccess.value = true; // Set success message
+      fetchBorrowingRequest();
     }
+    console.log('Response:', response.data);
 
   } catch (error) {
     console.error('Error:', error);
-    // Handle error and possibly show error message
   } finally {
     isSubmitting.value = false;
-  }
-  };
-  
-  const cartLength = computed(() => cartItems.value.length);
-
-const fetchCartItems = async () => {
-  isLoading.value = true;
-  try {
-    const response = await axios.get('/me/carts');
-    cartItems.value = response.data.data.map((item: any) => ({
-      ...item,
-      quantity: 1,
-    }));
-    console.log('Cart items:', cartItems.value);
-  } catch (error) {
-    console.error('Failed to fetch items:', error);
-    // Handle error fetching cart items
-  } finally {
-    isLoading.value = false;
   }
 };
 
 const fetchBorrowingRequest = async () => {
+  isLoading.value = true;
   try {
     const response = await axios.get(`/borrowing-requests/${route.params.id}`);
     borrowingRequest.value = response.data.data;
     borrowingRequestDetail.value = response.data.data.details[0];
     borrowedItems.value = response.data.data.details[0].borrowed_items;
+    borrowDate.value = response.data.data.details[0].start_date;
+    returnDate.value = response.data.data.details[0].end_date;
+    if (borrowingRequest.value?.status === 'pending') {
+      isInputDisabled.value = false;
+    } else {
+      isInputDisabled.value = true;
+    }
+
     console.log('borrowingRequest:', borrowingRequest.value);
     console.log('borrowingRequestDetail:', borrowingRequestDetail.value);
     console.log('borrowedItems:', borrowedItems.value);
   } catch (error) {
     console.error('Error:', error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const timeZone = 'Asia/Jakarta';
+const displayBorrowDate = computed({
+  get() {
+    return borrowDate.value ? format(toZonedTime(new Date(borrowDate.value), timeZone), 'yyyy-MM-dd HH:mm') : '';
+  },
+  set(value) {
+    borrowDate.value = fromZonedTime(value, timeZone).toISOString();
+  }
+});
+
+const displayReturnDate = computed({
+  get() {
+    return returnDate.value ? format(toZonedTime(new Date(returnDate.value), timeZone), 'yyyy-MM-dd HH:mm') : '';
+  },
+  set(value) {
+    returnDate.value = fromZonedTime(value, timeZone).toISOString();
+  }
+})
+
+const resolveStatusVariant = (status: string) => {
+  if ((status === 'pending' && borrowingRequest.value?.is_revised) || status === 'revised') {
+    return { color: 'warning', text: 'REVISI', icon: 'ri-pencil-line'}
+  } else if (status === 'pending') {
+    return { color: 'info', text: 'DIAJUKAN', icon: 'ri-time-line'}
+  } else if (status === 'approved') {
+    return { color: 'success', text: 'DISETUJUI', icon: 'ri-checkbox-circle-line'};
+  } else if (status === 'rejected') {
+    return { color: 'error', text: 'DITOLAK', icon: 'ri-close-circle-line'};
+  } else {
+    return { color: '', text: '', icon: ''};
   }
 };
 
@@ -98,23 +143,32 @@ const goBack = () => {
 };
 
 onMounted(() => {
-  fetchCartItems();
-  fetchBorrowingRequest();
+  fetchBorrowingRequest()
 });
 </script>
 
 <template>
   <VCard>
     <VCardText>
-      <CartContent/>
     <VRow v-if="borrowedItemsLength >= 0">
       <VCol
         cols="12"
         md="8"
       >
+
+      <VAlert
+        v-if="borrowingRequest?.status"
+        :color="resolveStatusVariant(borrowingRequest?.status ? borrowingRequest.status : 'pending').color"
+        variant="tonal"
+        :icon="resolveStatusVariant(borrowingRequest?.status ? borrowingRequest.status : 'pending').icon"
+      >
+        <VAlertTitle class="mb-1">
+          {{ resolveStatusVariant(borrowingRequest?.status ? borrowingRequest.status : 'pending').text }}
+        </VAlertTitle>
+      </VAlert>
     
         <h5 class="text-h5 my-4">
-          Keranjang Alat ({{ borrowedItemsLength }} Item)
+          Alat yang dipinjam
         </h5>
     
         <!-- 👉 Cart items -->
@@ -158,6 +212,7 @@ onMounted(() => {
                   </div>
     
                   <VTextField
+                    id="quantity"
                     v-model.number="borrowedItem.quantity"
                     type="number"
                     density="compact"
@@ -165,6 +220,7 @@ onMounted(() => {
                     class="my-4"
                     min = "1"
                     Label="Jumlah"
+                    :disabled="isInputDisabled"
                   />
                 </div>
     
@@ -221,7 +277,7 @@ onMounted(() => {
         cols="12"
         md="4"
       >
-      <VForm @submit.prevent="sendRequest" ref="formRef">
+      <VForm>
     
         <VCard
           flat
@@ -229,62 +285,141 @@ onMounted(() => {
         >
           <!-- Form Title -->
           <VCardText>
-            <h5 class="text-h5 mb-4">
-              Data Peminjaman
-            </h5>
-    
             <div class="bg-var-theme-background rounded-xl pa-5 mt-4">
-              <p class="my-2 text-body-1">
-                Lengkapi data di bawah untuk keperluan peminjaman. Jika Anda meminjam di luar keperluan praktikum, maka mata pelajaran dapat dikosongi.
+              <p class="text-h6">
+                Data Peminjam
               </p>
+              <div class="d-flex gap-12 mb-2">
+                <div class="text-body-1 text-high-emphasis font-weight-medium">
+                  Nama
+                </div>
+                <div class="text-body-1">
+                  {{ borrowingRequest?.sender.profile?.name }}
+                </div>
+              </div>
+              <div class="d-flex gap-6 mb-2">
+                <div class="text-body-1 text-high-emphasis font-weight-medium">
+                  NISN/NIP
+                </div>
+                <div class="text-body-1">
+                  {{ borrowingRequest?.sender.profile?.nisn ?? borrowingRequest?.sender.profile?.nip }}
+                </div>
+              </div>
+              <div class="d-flex gap-12 mb-2">
+                <div class="text-body-1 text-high-emphasis font-weight-medium">
+                  Kelas
+                </div>
+                <div class="text-body-1">
+                  {{ borrowingRequest?.sender.profile?.class?.name ?? '-' }}
+                </div>
+              </div>
             </div>
           </VCardText>
     
           <!-- Form details -->
           <VCardText>
+            <p class="text-h5">
+              Data Peminjaman
+            </p>
+
             <div class="text-sm text-high-emphasis">
+              
+    
+              
+
+              <div v-if="isInputDisabled">
+                <p class="text-h6 mt-4 font-weight-medium">
+                  Tanggal Peminjaman
+                </p>
+                <div class="text-body-1 text-high-emphasis font-weight-regular">
+                  {{ formatDateTime(borrowingRequestDetail?.start_date ?? '-') }}
+                </div>
+              </div>
+
               <AppDateTimePicker
-                v-model="borrowDate"
+                v-else
+                id="borrow-date"
+                v-model="displayBorrowDate"
                 label="Tanggal Peminjaman"
                 placeholder="Tanggal peminjaman"
-                :rules="[v => !!v || 'Tanggal peminjaman harus diisi']"
                 :config="{ enableTime: true, dateFormat: 'Y-m-d H:i' }"
                 :append-inner-icon="'ri-calendar-line'"
                 class="my-4"
-                required
               />
-    
+
+              <div v-if="isInputDisabled">
+                <p class="text-h6 mt-4 font-weight-medium">
+                  Tanggal Pengembalian
+                </p>
+                <div class="text-body-1 text-high-emphasis font-weight-regular">
+                  {{ formatDateTime(borrowingRequestDetail?.end_date ?? '-')}}
+                </div>
+              </div>
+
               <AppDateTimePicker
-                v-model="returnDate"
+                v-else
+                id="return-date"
+                v-model="displayReturnDate"
                 label="Tanggal Pengembalian"
                 placeholder="Tanggal pengembalian"
-                :rules="[v => !!v || 'Tanggal pengembalian harus diisi']"
                 :config="{ enableTime: true, dateFormat: 'Y-m-d H:i' }"
                 :append-inner-icon="'ri-calendar-line'"
                 class="my-4"
-                aria-required="true"
               />
-    
-              <VTextarea
-                v-model="purpose"
-                label="Keterangan"
-                rows="2"
-                placeholder="keterangan"
-                :rules="[v => !!v || 'Keterangan harus diisi']"
-                required
-              />
+
+              <div>
+                <p class="text-h6 mt-4 font-weight-medium">
+                  Mata pelajaran
+                </p>
+                <div class="text-body-1 text-high-emphasis font-weight-regular">
+                  {{ borrowingRequest?.school_subject?.name ?? '-' }}
+                </div>
+              </div>
+
+              <div>
+                <p class="text-h6 mt-4 font-weight-medium">
+                  Keterangan
+                </p>
+                <div class="text-body-1 text-high-emphasis font-weight-regular">
+                  {{ borrowingRequest?.purpose ?? '-'}}
+                </div>
+              </div>
+              
             </div>
           </VCardText>
         </VCard>
-    
-        <VBtn
-          block
-          class="mt-4"
-          :loading="isSubmitting"
-          type="submit"
-        >
-          Ajukan Peminjaman
-        </VBtn>
+
+        <div v-if="borrowingRequest?.status === 'pending' && !borrowingRequest.is_revised">
+          <VBtn
+            block
+            class="mt-4"
+            :loading="isSubmitting"
+            color="primary"
+            @click="sendRequest(1)"
+          >
+            SETUJUI
+          </VBtn>
+  
+          <VBtn
+            block
+            class="mt-4"
+            :loading="isSubmitting"
+            color="error"
+            @click="sendRequest(2)"
+          >
+            TOLAK
+          </VBtn>
+  
+          <VBtn
+            block
+            class="mt-4"
+            :loading="isSubmitting"
+            color="warning"
+            @click="sendRequest(3)"
+          >
+            AJUKAN REVISI
+          </VBtn>
+        </div>
         <VAlert
           v-if="isSuccess"
           color="success"

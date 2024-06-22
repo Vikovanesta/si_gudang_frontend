@@ -74,15 +74,15 @@ const headers = [
 // 👉 Borrowing request variant resolver
 const resolveStatusVariant = (status: string) => {
   if (status === 'pending')
-    return { status: status, chip: { color: 'info' } }
+    return { status: status, chip: { color: 'info', status:'Diajukan' } }
   if (status === 'approved')
-    return { status: status, chip: { color: 'success' } }
+    return { status: status, chip: { color: 'success', status:'Disetujui' } }
   if (status === 'rejected')
-    return { status: status, chip: { color: 'error' } }
+    return { status: status, chip: { color: 'error', status:'Ditolak' } }
   if (status === 'revised')
-    return { status: status, chip: { color: 'warning' } }
+    return { status: status, chip: { color: 'warning', status:'Revisi' } }
 
-  return { status: status, chip: { variant: 'text' } }
+  return { status: status, chip: { variant: 'text', status: 'Diajukan' } }
 }
 
 const debouncedFetchBorrowingRequests = useDebounceFn(fetchBorrowingRequests, 300)

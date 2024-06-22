@@ -16,6 +16,7 @@ export interface Role {
 export interface Student {
   id: number;
   name: string;
+  nisn: string;
   year_in: number;
   date_of_birth: string;
   class: Class;   
