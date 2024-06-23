@@ -67,7 +67,7 @@ const headers = [
   { title: 'Peminjam', key: 'sender', sortable: false},
   { title: 'Total Item', key: 'total_item', sortable: false },
   { title: 'Waktu Pengambilan', key: 'borrowing_date' },
-  { title: 'Status', key: 'status' },
+  { title: 'Status', key: 'status', sortable: false},
   { title: 'Actions', key: 'actions', sortable: false },
 ]
 

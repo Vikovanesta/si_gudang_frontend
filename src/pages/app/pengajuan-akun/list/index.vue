@@ -7,13 +7,13 @@ definePage({
   }
 })
 
-const borrowingRequests = ref<BorrowingRequest[]>([])
-const borrowingRequestStatuses = ref<BorrowingRequestStatus[]>([])
-const totalBorrowingRequests = ref(0)
+const registrationRequests = ref<RegistrationRequest[]>([])
+const totalRegistrationRequests = ref(0)
+const isSubmitting = ref(false)
 
-const fetchBorrowingRequests = async () => {
+const fetchRegistrationRequests = async () => {
   try {
-    const response = await axios.get('/borrowing-requests', {
+    const response = await axios.get('/register/students', {
       params: {
         q: searchQuery.value,
         status_id: selectedStatusId.value,
@@ -22,16 +22,16 @@ const fetchBorrowingRequests = async () => {
         sort_by: sortBy.value,
         sort_direction: orderBy.value,
       }
-    
     })
-    borrowingRequests.value = response.data.data
-    totalBorrowingRequests.value = response.data.meta.total
-    console.log('borrowingRequests', borrowingRequests.value)
-    console.log('totalBorrowingRequests', totalBorrowingRequests.value)
+    registrationRequests.value = response.data.data
+    totalRegistrationRequests.value = response.data.meta.total
+    console.log('registrationRequests', registrationRequests.value)
   } catch (error) {
     console.error(error)
   }
 }
+
+const borrowingRequestStatuses = ref<BorrowingRequestStatus[]>([])
 
 const fetchBorrowingRequestStatuses = async () => {
   try {
@@ -43,6 +43,20 @@ const fetchBorrowingRequestStatuses = async () => {
   }
 }
 
+const sendRequest = async (id: number, verify: number) => {
+  isSubmitting.value = true
+  try {
+    const response = await axios.post(`/register/students/${id}`, {
+      verify: verify
+    })
+    fetchRegistrationRequests()
+    console.log('Response: ', response.data.data)
+  } catch (error) {
+    console.error(error)
+  } finally {
+    isSubmitting.value = false
+  }
+}
 
 const searchQuery = ref('')
 const selectedStatusId = ref<number>()
@@ -64,45 +78,46 @@ const updateOptions = (options: any) => {
 // 👉 headers
 const headers = [
   { title: 'ID', key: 'id' },
-  { title: 'Peminjam', key: 'sender', sortable: false},
-  { title: 'Total Item', key: 'total_item', sortable: false },
-  { title: 'Waktu Pengambilan', key: 'borrowing_date' },
-  { title: 'Status', key: 'status' },
-  { title: 'Actions', key: 'actions', sortable: false },
+  { title: 'Nama', key: 'name'},
+  { title: 'Kelas', key: 'class', sortable: false },
+  { title: 'NISN', key: 'nisn' },
+  { title: 'Tahun Masuk', key: 'year_in'},
+  { title: 'Email', key: 'email', sortable: false},
+  { title: 'Telepon', key: 'phone', sortable: false },
+  { title: 'Status', key: 'status', sortable: false},
+  { title: 'Aksi', key: 'actions', sortable: false },
 ]
 
 // 👉 Borrowing request variant resolver
 const resolveStatusVariant = (status: string) => {
-  if (status === 'pending')
+  if (status === 'Pending')
     return { status: status, chip: { color: 'info', status:'Diajukan' } }
-  if (status === 'approved')
+  if (status === 'Approved')
     return { status: status, chip: { color: 'success', status:'Disetujui' } }
-  if (status === 'rejected')
+  if (status === 'Rejected')
     return { status: status, chip: { color: 'error', status:'Ditolak' } }
-  if (status === 'revised')
-    return { status: status, chip: { color: 'warning', status:'Revisi' } }
 
   return { status: status, chip: { variant: 'text', status: 'Diajukan' } }
 }
 
-const debouncedFetchBorrowingRequests = useDebounceFn(fetchBorrowingRequests, 300)
+const debouncedFetchRegistrationRequests = useDebounceFn(fetchRegistrationRequests, 300)
 
 watch(searchQuery, () => {
-  debouncedFetchBorrowingRequests()
+  debouncedFetchRegistrationRequests()
 })
 
 watch([selectedStatusId, page, sortBy, orderBy], () => {
-  fetchBorrowingRequests()
+  fetchRegistrationRequests()
 })
 
 onMounted(() => {
   fetchBorrowingRequestStatuses()
-  fetchBorrowingRequests()
+  fetchRegistrationRequests()
 })
 </script>
 
 <template>
-  <section v-if="borrowingRequests">
+  <section v-if="registrationRequests">
 
     <VCard id="invoice-list">
       <VCardText class="d-flex align-center flex-wrap gap-4">
@@ -117,6 +132,7 @@ onMounted(() => {
             />
           </div>
 
+          <!-- TODO: Adjust status -->
           <div style="inline-size: 200px;">
             <VSelect
               v-model="selectedStatusId"
@@ -137,58 +153,55 @@ onMounted(() => {
         v-model:items-per-page="itemsPerPage"
         v-model:page="page"
         show-select
-        :items-length="totalBorrowingRequests"
+        :items-length="totalRegistrationRequests"
         :headers="headers"
-        :items="borrowingRequests"
+        :items="registrationRequests"
         item-value="id"
         class="text-no-wrap rounded-0"
         @update:options="updateOptions"
       >
         <!-- id -->
         <template #item.id="{ item }">
-          <RouterLink :to="{ name: 'app-permintaan-peminjaman-detail-id', params: { id: item.id } }">
+          <div class="text-primary">
             #{{ item.id }}
-          </RouterLink>
+          </div>
         </template>
 
-        <!-- Sender -->
-        <template #item.sender="{ item }">
+        <!-- Name -->
+        <template #item.name="{ item }">
           <div class="d-flex align-center">
-            <VAvatar
-              size="34"
-              :color="!item.sender.profile_image_url ? resolveStatusVariant(item.status).chip.color : undefined"
-              :variant="!item.sender.profile_image_url ? 'tonal' : undefined"
-              class="me-3"
-            >
-              <VImg
-                v-if="item.sender.profile_image_url"
-                :src="item.sender.profile_image_url"
-              />
-              <span v-else>{{ avatarText(item.sender.profile?.name ? item.sender.profile.name : 'Admin') }}</span>
-            </VAvatar>
-            <div class="d-flex flex-column">
-              <RouterLink
-                :to="{ name: 'pages-user-profile-tab', params: { tab: 'profile' } }"
-                class="text-link text-base font-weight-medium mb-0"
-              >
-                {{ item.sender.profile?.name }}
-              </RouterLink>
-              <span class="text-body-2">{{ item.sender.email }}</span>
+            <div class="d-flex flex-column text-base font-weight-medium mb-0">
+              {{ item.name }}
             </div>
           </div>
         </template>
 
-        <!-- Total -->
-        <template #item.total_item="{ item }">
-          {{ item.borrowed_items_count }}
+        <!-- Class -->
+        <template #item.class="{ item }">
+          {{ item.class.name }}
         </template>
 
-        <!-- Date -->
-        <template #item.borrowing_date="{ item }">
-          {{ formatDateTime(item.details[0].start_date) }}
+        <!-- NISN -->
+        <template #item.nisn="{ item }">
+          {{ item.nisn }}
         </template>
 
-        <!-- Balance -->
+        <!-- Year in -->
+        <template #item.year_in="{ item }">
+          {{ item.year_in }}
+        </template>
+
+        <!-- Email -->
+        <template #item.email="{ item }">
+          {{ item.email }}
+        </template>
+
+        <!-- Phone -->
+        <template #item.phone="{ item }">
+          {{ item.phone }}
+        </template>
+
+        <!-- Status -->
         <template #item.status="{ item }">
           <VChip
             :color="resolveStatusVariant(item.status).chip.color"
@@ -203,9 +216,20 @@ onMounted(() => {
           <div class="text-no-wrap">
             <IconBtn
               size="small"
-              :to="{ name: 'app-permintaan-peminjaman-detail-id', params: { id: item.id } }"
+              :loading="isSubmitting"
+              :disabled="item.status !== 'Pending'"
+              @click="sendRequest(item.id, 1)"
             >
-              <VIcon icon="ri-eye-line" />
+              <VIcon icon="ri-checkbox-circle-fill" color="primary" size="30" />
+            </IconBtn>
+
+            <IconBtn
+              size="small"
+              :loading="isSubmitting"
+              :disabled="item.status !== 'Pending'"
+              @click="sendRequest(item.id, 0)"
+            >
+              <VIcon icon="ri-forbid-2-line" color="error" size="30" />
             </IconBtn>
           </div>
         </template>
@@ -226,7 +250,7 @@ onMounted(() => {
             </div>
 
             <p class="d-flex align-center text-base text-high-emphasis me-2 mb-0">
-              {{ paginationMeta({ page, itemsPerPage }, totalBorrowingRequests) }}
+              {{ paginationMeta({ page, itemsPerPage }, totalRegistrationRequests) }}
             </p>
 
             <div class="d-flex gap-x-2 align-center me-2">
@@ -246,8 +270,8 @@ onMounted(() => {
                 density="comfortable"
                 variant="text"
                 color="high-emphasis"
-                :disabled="page >= Math.ceil(totalBorrowingRequests / itemsPerPage)"
-                @click="page >= Math.ceil(totalBorrowingRequests / itemsPerPage) ? page = Math.ceil(totalBorrowingRequests / itemsPerPage ) : page++ "
+                :disabled="page >= Math.ceil(totalRegistrationRequests / itemsPerPage)"
+                @click="page >= Math.ceil(totalRegistrationRequests / itemsPerPage) ? page = Math.ceil(totalRegistrationRequests / itemsPerPage ) : page++ "
               />
             </div>
           </div>
@@ -258,7 +282,7 @@ onMounted(() => {
   </section>
   <section v-else>
     <VCard>
-      <VCardTitle>No Invoice Found</VCardTitle>
+      <VCardTitle>Tidak ada pengajuan akun</VCardTitle>
     </VCard>
   </section>
 </template>

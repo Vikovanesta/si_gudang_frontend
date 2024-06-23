@@ -128,3 +128,17 @@ export interface BorrowingStatus {
   id: number;
   name: string;
 }
+
+export interface RegistrationRequest {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  nisn: string;
+  year_in: number;
+  date_of_birth: string;
+  is_verified: boolean;
+  verified_at: string;
+  class: Class;
+  verifier: User | null;
+}
