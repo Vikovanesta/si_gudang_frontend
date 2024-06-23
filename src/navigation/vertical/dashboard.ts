@@ -9,6 +9,7 @@ export default [
   {
     title: 'Status Pengajuan Alat',
     icon: { icon: 'ri-information-fill' },
+    to: 'app-status-pengajuan-alat-list',
     subject: 'Academic',
   },
   {
