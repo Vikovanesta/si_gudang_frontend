@@ -112,13 +112,13 @@ onMounted(() => {
       md="8"
     >
 
-      <h5 class="text-h5 my-4">
+      <h5 class="text-h5 my-4" id="page-title" >
         Keranjang Alat ({{ cartLength }} Item)
       </h5>
 
       <!-- 👉 Cart items -->
       <div
-        v-if="cartLength > 0  "
+        v-if="cartLength > 0 "
         class="border rounded-xl"
       >
         <template
@@ -129,6 +129,7 @@ onMounted(() => {
             class="d-flex align-center gap-4 pa-5 position-relative flex-column flex-sm-row"
           >
             <IconBtn
+              :id="`btn-remove-${cartItem.id}`"
               class="checkout-item-remove-btn"
               color="disabled"
               @click="removeItem(cartItem)"
@@ -152,7 +153,7 @@ onMounted(() => {
               :class="(($vuetify.display.width <= 1280 && $vuetify.display.width >= 960) || $vuetify.display.width <= 700) ? 'flex-column' : 'flex-row'"
             >
               <div>
-                <h6 class="text-h6 mb-2">
+                <h6 class="text-h6 mb-2" :id="`name-${cartItem.id}`">
                   {{ cartItem.item.name }}
                 </h6>
                 <div class="d-flex align-center text-no-wrap gap-4 text-base">
@@ -161,6 +162,7 @@ onMounted(() => {
                     <span class="text-primary">{{ cartItem.item.stock }}</span>
                   </div>
                   <VChip
+                    :id="`warehouse-${cartItem.id}`"
                     :color="'success'"
                     size="small"
                   >
@@ -169,6 +171,7 @@ onMounted(() => {
                 </div>
 
                 <VTextField
+                  :id="`quantity-${cartItem.id}`"
                   v-model.number="cartItem.quantity"
                   type="number"
                   density="compact"
@@ -189,7 +192,7 @@ onMounted(() => {
                   class="d-flex flex-column"
                   :class="$vuetify.display.smAndUp ? 'gap-4' : 'gap-2'"
                 >
-                  <p class="text-base mb-0">
+                  <p class="text-base mb-0" :id="`material-${cartItem.id}`">
                     <span>Material: {{ cartItem.item.material.name }}</span>
                   </p>
                 </div>
@@ -209,6 +212,7 @@ onMounted(() => {
         <v-row justify="start">
           <v-col cols="auto">
             <div
+              id="btn-back"
               class="d-flex align-center gap-1 rounded-lg px-3 py-2 text-base mt-4"
               style="border: 1px solid rgb(var(--v-theme-primary));"
               @click="goBack"
@@ -255,6 +259,7 @@ onMounted(() => {
         <VCardText>
           <div class="text-sm text-high-emphasis">
             <AppDateTimePicker
+              id="borrow-date"
               v-model="borrowDate"
               label="Tanggal Peminjaman"
               placeholder="Tanggal peminjaman"
@@ -266,6 +271,7 @@ onMounted(() => {
             />
 
             <AppDateTimePicker
+              id="return-date"
               v-model="returnDate"
               label="Tanggal Pengembalian"
               placeholder="Tanggal pengembalian"
@@ -277,6 +283,7 @@ onMounted(() => {
             />
 
             <VSelect
+              id="select-subject"
               v-model="selectedSubject"
               :items="schoolSubjects"
               item-title="name"
@@ -290,6 +297,7 @@ onMounted(() => {
             />
 
             <VTextarea
+              id="keterangan"
               v-model="purpose"
               label="Keterangan"
               rows="2"
@@ -302,6 +310,7 @@ onMounted(() => {
       </VCard>
 
       <VBtn
+        id="btn-submit"
         block
         class="mt-4"
         :loading="isSubmitting"
@@ -311,6 +320,7 @@ onMounted(() => {
       </VBtn>
       <VAlert
         v-if="isSuccess"
+        id="alert-success"
         color="success"
         variant="tonal"
         closable

@@ -43,6 +43,7 @@ const goToPage = (page: number) => {
     <template v-if="isLoading">
       <div class="d-flex flex-column justify-center align-center h-screen">
         <VProgressCircular
+          id="loading-circle"
           indeterminate
           color="primary"
           size="70"
@@ -67,6 +68,7 @@ const goToPage = (page: number) => {
         <v-col cols="auto" class="text-center">
           <v-btn
             v-if="pagination && pagination.current_page > 1"
+            id="btn-prev"
             @click="goToPage(pagination.current_page - 1)"
             color="primary"
           >
@@ -79,6 +81,7 @@ const goToPage = (page: number) => {
         <v-col cols="auto" class="text-center">
           <v-btn
             v-if="pagination && pagination.current_page < pagination.last_page"
+            id="btn-next"
             @click="goToPage(pagination.current_page + 1)"
             color="primary"
             class="px-8"

@@ -52,25 +52,25 @@ const addToCart = async () => {
 
     <VCardText class="flex-1">
       <div class="mb-3">
-        <h5 class="text-h4 text-wrap">
+        <h5 class="text-h4 text-wrap" :id="`name-${id}`">
           {{ name }}
         </h5>
-        <div class="text-subtitle-1">
+        <div class="text-subtitle-1" :id="`warehouse-${id}`">
           {{ warehouseName }}
         </div>
       </div>
       <h4 class="text-h5 font-weight-regular">
-        Material: <span class="font-weight-medium">{{ materialName }}</span>
+        Material: <span class="font-weight-medium" :id="`material-${id}`">{{ materialName }}</span>
       </h4>
       <div class="text-h5 font-weight-regular mb-3">
-        Tersedia: <span class="font-weight-medium">{{ stock }}</span>
+        Tersedia: <span class="font-weight-medium" :id="`stock-${id}`">{{ stock }}</span>
       </div>
       <div style="display: inline-block;">
-        <div v-if="isInCart" class="text-green cursor-default" style="block-size: 24px;">
+        <div v-if="isInCart" class="text-green cursor-default" style="block-size: 24px;" id="btn-add-to-cart">
           <VIcon icon="mdi-cart-check"></VIcon> 
           SUDAH ADA DI KERANJANG
         </div>
-        <VBtn v-else @click.prevent="addToCart" variant="text" :loading="isLoading">
+        <VBtn v-else @click.prevent="addToCart" variant="text" :loading="isLoading" id="btn-add-to-cart">
           <v-icon>mdi-cart-plus</v-icon>
           <span>TAMBAH KE KERANJANG</span>
         </VBtn>

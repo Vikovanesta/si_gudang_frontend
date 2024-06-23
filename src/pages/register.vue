@@ -175,6 +175,7 @@ onMounted(() => {
                 md="6"
                 >
                   <VTextField
+                    id="email"
                     v-model="email.value.value"
                     :error-messages="email.errorMessage.value"
                     type="email"
@@ -188,6 +189,7 @@ onMounted(() => {
                   md="6"
                 >
                   <VTextField
+                    id="phone"
                     v-model="phone.value.value"
                     :error-messages="phone.errorMessage.value"
                     label="Nomor telepon"
@@ -200,6 +202,7 @@ onMounted(() => {
                   md="6"
                 >
                   <VTextField
+                    id="password"
                     v-model="password.value.value"
                     :error-messages="password.errorMessage.value"
                     label="Kata sandi"
@@ -215,6 +218,7 @@ onMounted(() => {
                   md="6"
                 >
                   <VTextField
+                    id="confirm-password"
                     v-model="confirmPassword.value.value"
                     :error-messages="confirmPassword.errorMessage.value"
                     label="Konfirmasi kata sandi"
@@ -241,6 +245,7 @@ onMounted(() => {
                   cols="12"
                 >
                   <VTextField
+                    id="name"
                     v-model="name.value.value"
                     :error-messages="name.errorMessage.value"
                     label="Nama"
@@ -253,6 +258,7 @@ onMounted(() => {
                   md="6"
                 >
                   <VTextField
+                    id="nisn"
                     v-model="nisn.value.value"
                     :error-messages="nisn.errorMessage.value"
                     label="Nisn"
@@ -265,6 +271,7 @@ onMounted(() => {
                   md="6"
                 >
                   <VSelect
+                    id="class-id"
                     v-model="classId.value.value"
                     :error-messages="classId.errorMessage.value"
                     label="Kelas"
@@ -277,6 +284,7 @@ onMounted(() => {
 
                 <VCol cols="12" md="6">
                   <AppDateTimePicker
+                    id="date-of-birth"
                     v-model="dateOfBirth.value.value"
                     :error-messages="dateOfBirth.errorMessage.value"
                     label="Tanggal lahir"
@@ -288,6 +296,7 @@ onMounted(() => {
 
                 <VCol cols="12" md="6">
                   <VTextField
+                    id="year-in"
                     v-model="yearIn.value.value"
                     :error-messages="yearIn.errorMessage.value"
                     type="number"
@@ -305,6 +314,7 @@ onMounted(() => {
 
         <div class="d-flex flex-wrap justify-space-between justify-center gap-x-4 gap-y-2 my-6">
           <VBtn
+            id="btn-prev"
             color="secondary"
             variant="outlined"
             :disabled="currentStep === 0"
@@ -319,6 +329,7 @@ onMounted(() => {
           </VBtn>
 
           <VBtn
+            id="btn-submit"
             v-if="items.length - 1 === currentStep"
             color="success"
             append-icon="ri-arrow-right-line"
@@ -330,6 +341,7 @@ onMounted(() => {
 
           <VBtn
             v-else
+            id="btn-next"
             @click="nextStep"
           >
             Selanjutnya
