@@ -192,6 +192,7 @@ const onSubmit = () => {
               <!-- email -->
               <VCol cols="12">
                 <VTextField
+                  id="email"
                   v-model="credentials.email"
                   label="Email"
                   placeholder="johndoe@email.com"
@@ -205,6 +206,7 @@ const onSubmit = () => {
               <!-- password -->
               <VCol cols="12">
                 <VTextField
+                  id="password"
                   v-model="credentials.password"
                   label="Kata sandi"
                   placeholder="············"
@@ -229,6 +231,7 @@ const onSubmit = () => {
                 </div>
 
                 <VBtn
+                  id="btn-submit"
                   block
                   type="submit"
                 >
@@ -245,6 +248,7 @@ const onSubmit = () => {
                   Belum memiliki akun?
                 </span>
                 <RouterLink
+                  id="to-register"
                   class="text-primary ms-1 d-inline-block text-body-1"
                   :to="{ name: 'register' }"
                 >

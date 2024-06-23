@@ -11,38 +11,6 @@ const registrationRequests = ref<RegistrationRequest[]>([])
 const totalRegistrationRequests = ref(0)
 const isSubmitting = ref(false)
 
-const fetchRegistrationRequests = async () => {
-  try {
-    const response = await axios.get('/register/students', {
-      params: {
-        q: searchQuery.value,
-        status_id: selectedStatusId.value,
-        page_size: itemsPerPage.value,
-        page: page.value,
-        sort_by: sortBy.value,
-        sort_direction: orderBy.value,
-      }
-    })
-    registrationRequests.value = response.data.data
-    totalRegistrationRequests.value = response.data.meta.total
-    console.log('registrationRequests', registrationRequests.value)
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-const borrowingRequestStatuses = ref<BorrowingRequestStatus[]>([])
-
-const fetchBorrowingRequestStatuses = async () => {
-  try {
-    const response = await axios.get('/borrowing-request-statuses')
-    borrowingRequestStatuses.value = response.data.data
-    console.log('borrowingRequestStatuses', borrowingRequestStatuses.value)
-  } catch (error) {
-    console.error(error)
-  }
-}
-
 const sendRequest = async (id: number, verify: number) => {
   isSubmitting.value = true
   try {
@@ -59,7 +27,7 @@ const sendRequest = async (id: number, verify: number) => {
 }
 
 const searchQuery = ref('')
-const selectedStatusId = ref<number>()
+const selectedStatus = ref<string>()
 const selectedRows = ref<string[]>([])
 
 // Data table options
@@ -73,6 +41,26 @@ const updateOptions = (options: any) => {
   page.value = options.page
   sortBy.value = options.sortBy[0]?.key
   orderBy.value = options.sortBy[0]?.order
+}
+
+const fetchRegistrationRequests = async () => {
+  try {
+    const response = await axios.get('/register/students', {
+      params: {
+        q: searchQuery.value,
+        status: selectedStatus.value,
+        page_size: itemsPerPage.value,
+        page: page.value,
+        sort_by: sortBy.value,
+        sort_direction: orderBy.value,
+      }
+    })
+    registrationRequests.value = response.data.data
+    totalRegistrationRequests.value = response.data.meta.total
+    console.log('registrationRequests', registrationRequests.value)
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 // 👉 headers
@@ -100,18 +88,23 @@ const resolveStatusVariant = (status: string) => {
   return { status: status, chip: { variant: 'text', status: 'Diajukan' } }
 }
 
+const registrationRequestStatuses = ref([
+  { id: 1, name: 'Pending' },
+  { id: 2, name: 'Approved' },
+  { id: 3, name: 'Rejected' },
+])
+
 const debouncedFetchRegistrationRequests = useDebounceFn(fetchRegistrationRequests, 300)
 
 watch(searchQuery, () => {
   debouncedFetchRegistrationRequests()
 })
 
-watch([selectedStatusId, page, sortBy, orderBy], () => {
+watch([selectedStatus, page, sortBy, orderBy], () => {
   fetchRegistrationRequests()
 })
 
 onMounted(() => {
-  fetchBorrowingRequestStatuses()
   fetchRegistrationRequests()
 })
 </script>
@@ -132,16 +125,15 @@ onMounted(() => {
             />
           </div>
 
-          <!-- TODO: Adjust status -->
           <div style="inline-size: 200px;">
             <VSelect
-              v-model="selectedStatusId"
+              v-model="selectedStatus"
               placeholder="Status Pengajuan"
               clearable
               clear-icon="ri-close-line"
-              :items="borrowingRequestStatuses"
+              :items="registrationRequestStatuses"
               :item-title="'name'"
-              :item-value="'id'"
+              :item-value="'name'"
             />
           </div>
         </div>
