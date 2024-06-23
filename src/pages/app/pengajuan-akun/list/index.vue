@@ -112,7 +112,7 @@ onMounted(() => {
 <template>
   <section v-if="registrationRequests">
 
-    <VCard id="invoice-list">
+    <VCard id="registration-list">
       <VCardText class="d-flex align-center flex-wrap gap-4">
         <VSpacer />
 
@@ -120,6 +120,7 @@ onMounted(() => {
           <!-- 👉 Search  -->
           <div style="inline-size: 300px;">
             <VTextField
+              id="search"
               v-model="searchQuery"
               placeholder="Search Invoice"
             />
@@ -127,6 +128,7 @@ onMounted(() => {
 
           <div style="inline-size: 200px;">
             <VSelect
+              id="select-status"
               v-model="selectedStatus"
               placeholder="Status Pengajuan"
               clearable
@@ -154,7 +156,7 @@ onMounted(() => {
       >
         <!-- id -->
         <template #item.id="{ item }">
-          <div class="text-primary">
+          <div class="text-primary" :id="`id-${item.id}`" >
             #{{ item.id }}
           </div>
         </template>
@@ -162,40 +164,41 @@ onMounted(() => {
         <!-- Name -->
         <template #item.name="{ item }">
           <div class="d-flex align-center">
-            <div class="d-flex flex-column text-base font-weight-medium mb-0">
+            <div class="d-flex flex-column text-base font-weight-medium mb-0" :id="`name-${item.id}`" >
               {{ item.name }}
             </div>
           </div>
         </template>
 
         <!-- Class -->
-        <template #item.class="{ item }">
+        <template #item.class="{ item }" :id="`class-${item.id}`" >
           {{ item.class.name }}
         </template>
 
         <!-- NISN -->
-        <template #item.nisn="{ item }">
+        <template #item.nisn="{ item }" :id="`nisn-${item.id}`" >
           {{ item.nisn }}
         </template>
 
         <!-- Year in -->
-        <template #item.year_in="{ item }">
+        <template #item.year_in="{ item }" :id="`year-in-${item.id}`">
           {{ item.year_in }}
         </template>
 
         <!-- Email -->
-        <template #item.email="{ item }">
+        <template #item.email="{ item }" :id="`email-${item.id}`">
           {{ item.email }}
         </template>
 
         <!-- Phone -->
-        <template #item.phone="{ item }">
+        <template #item.phone="{ item }" :id="`phone-${item.id}`">
           {{ item.phone }}
         </template>
 
         <!-- Status -->
         <template #item.status="{ item }">
           <VChip
+            :id="`status-${item.id}`"
             :color="resolveStatusVariant(item.status).chip.color"
             size="small"
           >
@@ -207,6 +210,7 @@ onMounted(() => {
         <template #item.actions="{ item }">
           <div class="text-no-wrap">
             <IconBtn
+              :id="`btn-approve-${item.id}`"
               size="small"
               :loading="isSubmitting"
               :disabled="item.status !== 'Pending'"
@@ -216,6 +220,7 @@ onMounted(() => {
             </IconBtn>
 
             <IconBtn
+              :id="`btn-reject-${item.id}`"
               size="small"
               :loading="isSubmitting"
               :disabled="item.status !== 'Pending'"
@@ -247,6 +252,7 @@ onMounted(() => {
 
             <div class="d-flex gap-x-2 align-center me-2">
               <VBtn
+                id="btn-prev"
                 class="flip-in-rtl"
                 icon="ri-arrow-left-s-line"
                 variant="text"
@@ -257,6 +263,7 @@ onMounted(() => {
               />
 
               <VBtn
+                id="btn-next"
                 class="flip-in-rtl"
                 icon="ri-arrow-right-s-line"
                 density="comfortable"

@@ -104,7 +104,7 @@ onMounted(() => {
 <template>
   <section v-if="borrowingRequests">
 
-    <VCard id="invoice-list">
+    <VCard id="borrowing-request-list">
       <VCardText class="d-flex align-center flex-wrap gap-4">
         <VSpacer />
 
@@ -112,6 +112,7 @@ onMounted(() => {
           <!-- 👉 Search  -->
           <div style="inline-size: 300px;">
             <VTextField
+              id="search"
               v-model="searchQuery"
               placeholder="Search Invoice"
             />
@@ -119,6 +120,7 @@ onMounted(() => {
 
           <div style="inline-size: 200px;">
             <VSelect
+              id="select-status"
               v-model="selectedStatusId"
               placeholder="Status Pengajuan"
               clearable
@@ -146,7 +148,7 @@ onMounted(() => {
       >
         <!-- id -->
         <template #item.id="{ item }">
-          <RouterLink :to="{ name: 'app-permintaan-peminjaman-detail-id', params: { id: item.id } }">
+          <RouterLink :to="{ name: 'app-permintaan-peminjaman-detail-id', params: { id: item.id } }" :id="`id-${item.id}`" >
             #{{ item.id }}
           </RouterLink>
         </template>
@@ -164,33 +166,35 @@ onMounted(() => {
                 v-if="item.sender.profile_image_url"
                 :src="item.sender.profile_image_url"
               />
-              <span v-else>{{ avatarText(item.sender.profile?.name ? item.sender.profile.name : 'Admin') }}</span>
+              <span v-else >{{ avatarText(item.sender.profile?.name ? item.sender.profile.name : 'Admin') }}</span>
             </VAvatar>
             <div class="d-flex flex-column">
               <RouterLink
+                :id="`name-${item.id}`"
                 :to="{ name: 'pages-user-profile-tab', params: { tab: 'profile' } }"
                 class="text-link text-base font-weight-medium mb-0"
               >
                 {{ item.sender.profile?.name }}
               </RouterLink>
-              <span class="text-body-2">{{ item.sender.email }}</span>
+              <span class="text-body-2" :id="`email-${id}`" >{{ item.sender.email }}</span>
             </div>
           </div>
         </template>
 
         <!-- Total -->
-        <template #item.total_item="{ item }">
+        <template #item.total_item="{ item }" :id="`total-item-${item.id}`" >
           {{ item.borrowed_items_count }}
         </template>
 
         <!-- Date -->
-        <template #item.borrowing_date="{ item }">
+        <template #item.borrowing_date="{ item }" :id="`borrow-date-${item.id}`" >
           {{ formatDateTime(item.details[0].start_date) }}
         </template>
 
         <!-- Balance -->
         <template #item.status="{ item }">
           <VChip
+            :id="`status-${item.id}`"
             :color="resolveStatusVariant(item.status).chip.color"
             size="small"
           >
@@ -202,6 +206,7 @@ onMounted(() => {
         <template #item.actions="{ item }">
           <div class="text-no-wrap">
             <IconBtn
+              :id="`btn-view-${item.id}`"
               size="small"
               :to="{ name: 'app-permintaan-peminjaman-detail-id', params: { id: item.id } }"
             >
@@ -231,6 +236,7 @@ onMounted(() => {
 
             <div class="d-flex gap-x-2 align-center me-2">
               <VBtn
+                id="btn-prev"
                 class="flip-in-rtl"
                 icon="ri-arrow-left-s-line"
                 variant="text"
@@ -241,6 +247,7 @@ onMounted(() => {
               />
 
               <VBtn
+                id="btn-next"
                 class="flip-in-rtl"
                 icon="ri-arrow-right-s-line"
                 density="comfortable"

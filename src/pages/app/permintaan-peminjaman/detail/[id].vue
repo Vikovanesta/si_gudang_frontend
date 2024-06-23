@@ -132,7 +132,7 @@ onMounted(() => {
         variant="tonal"
         :icon="resolveStatusVariant(borrowingRequest?.status ? borrowingRequest.status : 'pending').icon"
       >
-        <VAlertTitle class="mb-1">
+        <VAlertTitle class="mb-1" id="alert-title" >
           {{ resolveStatusVariant(borrowingRequest?.status ? borrowingRequest.status : 'pending').text }}
         </VAlertTitle>
       </VAlert>
@@ -182,7 +182,7 @@ onMounted(() => {
                   </div>
     
                   <VTextField
-                    id="quantity"
+                    :id="`quantity-${borrowedItem.id}`"
                     v-model.number="borrowedItem.quantity"
                     type="number"
                     density="compact"
@@ -229,6 +229,7 @@ onMounted(() => {
                 @click="goBack"
               >
                 <v-icon
+                  id="btn-back"
                   icon="ri-arrow-left-line"
                   class="flip-in-rtl"
                   size="16"
@@ -294,9 +295,6 @@ onMounted(() => {
 
             <div class="text-sm text-high-emphasis">
               
-    
-              
-
               <div v-if="isInputDisabled">
                 <p class="text-h6 mt-4 font-weight-medium">
                   Tanggal Peminjaman
@@ -361,6 +359,7 @@ onMounted(() => {
 
         <div v-if="borrowingRequest?.status === 'pending' && !borrowingRequest.is_revised">
           <VBtn
+            id="btn-approve"
             block
             class="mt-4"
             :loading="isSubmitting"
@@ -371,6 +370,7 @@ onMounted(() => {
           </VBtn>
   
           <VBtn
+            id="btn-reject"
             block
             class="mt-4"
             :loading="isSubmitting"
@@ -381,6 +381,7 @@ onMounted(() => {
           </VBtn>
   
           <VBtn
+            id="btn-revise"
             block
             class="mt-4"
             :loading="isSubmitting"
