@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { Item } from '@/utils/types';
+import AddEditItemDialog from '@/views/app/item/AddEditItemDialog.vue';
 
 definePage({
   meta: {
     subject: 'Admin',
   }
 })
+
+const isAddItemDialogVisible = ref(false)
+const isEditItemDialogVisible = ref(false)
+const isDeleteItemDialogVisible = ref(false)
 
 const searchQuery = ref('')
 const selectedRows = ref<string[]>([])
@@ -76,13 +81,13 @@ onMounted(() => {
 
     <VCard id="registration-list">
       <VCardText class="d-flex align-center flex-wrap gap-4">
-        <!-- TODO: make this function -->
         <VBtn
           prepend-icon="ri-add-line"
-          :to="{ name: 'apps-invoice-add' }"
+          @click="isAddItemDialogVisible = !isAddItemDialogVisible"
         >
           TAMBAH ALAT
         </VBtn>
+        <AddEditItemDialog v-model:isDialogVisible="isAddItemDialogVisible" @item-submitted="fetchItems" />
 
         <!-- <VBtn
           prepend-icon="ri-delete-bin-7-line"
