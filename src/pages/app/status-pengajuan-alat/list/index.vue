@@ -153,13 +153,17 @@ onMounted(() => {
         </template>
 
         <!-- Total -->
-        <template #item.total_item="{ item }" :id="`total-item-${item.id}`" >
-          {{ item.borrowed_items_count }}
+        <template #item.total_item="{ item }">
+          <div :id="`total-item-${item.id}`" >
+            {{ item.borrowed_items_count }}
+          </div>
         </template>
 
         <!-- Date -->
-        <template #item.borrowing_date="{ item }" :id="`borrow-date-${item.id}`" >
-          {{ formatDateTime(item.details[0].start_date) }}
+        <template #item.borrowing_date="{ item }">
+          <div :id="`borrow-date-${item.id}`">
+            {{ formatDateTime(item.details[0].start_date) }}
+          </div>
         </template>
 
         <!-- Balance -->

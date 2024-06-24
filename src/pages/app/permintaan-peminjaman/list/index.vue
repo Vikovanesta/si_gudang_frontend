@@ -176,19 +176,23 @@ onMounted(() => {
               >
                 {{ item.sender.profile?.name }}
               </RouterLink>
-              <span class="text-body-2" :id="`email-${id}`" >{{ item.sender.email }}</span>
+              <span class="text-body-2" :id="`email-${item.id}`" >{{ item.sender.email }}</span>
             </div>
           </div>
         </template>
 
         <!-- Total -->
-        <template #item.total_item="{ item }" :id="`total-item-${item.id}`" >
-          {{ item.borrowed_items_count }}
+        <template #item.total_item="{ item }">
+          <div :id="`total-item-${item.id}`" >
+            {{ item.borrowed_items_count }}
+          </div>
         </template>
 
         <!-- Date -->
-        <template #item.borrowing_date="{ item }" :id="`borrow-date-${item.id}`" >
-          {{ formatDateTime(item.details[0].start_date) }}
+        <template #item.borrowing_date="{ item }">
+          <div :id="`borrow-date-${item.id}`">
+            {{ formatDateTime(item.details[0].start_date) }}
+          </div>
         </template>
 
         <!-- Balance -->

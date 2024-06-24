@@ -3,6 +3,7 @@ export default [
   {
     title: 'Alat',
     icon: { icon: 'ri-hammer-fill' },
+    to: 'app-item-list',
     subject: 'Admin',
   },
   {

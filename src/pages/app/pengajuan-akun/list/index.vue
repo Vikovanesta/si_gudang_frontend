@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { BorrowingRequest, BorrowingRequestStatus } from '@/utils/types';
+import { RegistrationRequest } from '@/utils/types';
+
 
 definePage({
   meta: {
@@ -171,28 +172,38 @@ onMounted(() => {
         </template>
 
         <!-- Class -->
-        <template #item.class="{ item }" :id="`class-${item.id}`" >
-          {{ item.class.name }}
+        <template #item.class="{ item }">
+          <div :id="`class-${item.id}`">
+            {{ item.class.name }}
+          </div>
         </template>
 
         <!-- NISN -->
-        <template #item.nisn="{ item }" :id="`nisn-${item.id}`" >
-          {{ item.nisn }}
+        <template #item.nisn="{ item }">
+          <div :id="`nisn-${item.id}`">
+            {{ item.nisn }}
+          </div>
         </template>
 
         <!-- Year in -->
-        <template #item.year_in="{ item }" :id="`year-in-${item.id}`">
-          {{ item.year_in }}
+        <template #item.year_in="{ item }">
+          <div :id="`year-in-${item.id}`">
+            {{ item.year_in }}
+          </div>
         </template>
 
         <!-- Email -->
-        <template #item.email="{ item }" :id="`email-${item.id}`">
-          {{ item.email }}
+        <template #item.email="{ item }">
+          <div :id="`email-${item.id}`">
+            {{ item.email }}
+          </div>
         </template>
 
         <!-- Phone -->
-        <template #item.phone="{ item }" :id="`phone-${item.id}`">
-          {{ item.phone }}
+        <template #item.phone="{ item }">
+          <div :id="`phone-${item.id}`">
+            {{ item.phone }}
+          </div>
         </template>
 
         <!-- Status -->

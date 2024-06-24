@@ -17,7 +17,7 @@ export const redirects: RouteRecordRaw[] = [
       console.log('userRole', userRole)
 
       if (userRole === 'admin')
-        return { name: 'dashboards-crm' }
+        return { name: 'app-item-list' }
       if (userRole === 'student' || userRole === 'teacher' )
         return { name: 'app-daftar-alat' }
       if (userRole === 'laboran')

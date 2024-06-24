@@ -54,6 +54,12 @@ export interface Item {
   is_in_cart: boolean;
   warehouse: Warehouse;
   material: Material;
+  category: ItemCategory;
+}
+
+export interface ItemCategory {
+  id: number;
+  name: string;
 }
 
 export interface CartItem {
@@ -138,6 +144,7 @@ export interface RegistrationRequest {
   year_in: number;
   date_of_birth: string;
   is_verified: boolean;
+  status: string;
   verified_at: string;
   class: Class;
   verifier: User | null;
