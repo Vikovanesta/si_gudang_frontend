@@ -54,10 +54,11 @@ const addItem = async () => {
   const formData = new FormData();
   formData.append('name', item.value.name);
   formData.append('max_stock', String(item.value.max_stock));
-  if (item.value.warehouse) formData.append('warehouse_id', String(selectedWarehouseId.value));
-  if (item.value.category) formData.append('category_id', String(selectedCategoryId.value));
-  if (item.value.material) formData.append('material_id', String(selectedMaterialId.value));
+  if (selectedWarehouseId) formData.append('warehouse_id', String(selectedWarehouseId.value));
+  if (selectedCategoryId) formData.append('category_id', String(selectedCategoryId.value));
+  if (selectedMaterialId) formData.append('material_id', String(selectedMaterialId.value));
   if (image.value) formData.append('image', image.value);
+  console.log('Form Data: ', formData)
   try {
     await axios.post('/items', formData, {
       headers: {
@@ -66,6 +67,7 @@ const addItem = async () => {
     })
     emit('update:isDialogVisible', false)
     emit('itemSubmitted')
+    
     console.log('Item added')
   } catch (error) {
     console.error(error)
@@ -133,11 +135,13 @@ const fetchWarehouses = async () => {
   }
 }
 
-watch(() => props.item, (value) => {
-  item.value = structuredClone(toRaw(value))
-  selectedWarehouseId.value = value.warehouse?.id
-  selectedCategoryId.value = value.category?.id
-  selectedMaterialId.value = value.material?.id
+watch([props], () => {
+  if (props.item.id > 0) {
+    item.value = structuredClone(toRaw(props.item))
+  }
+  // selectedWarehouseId.value = props.item.warehouse?.id
+  // selectedCategoryId.value = props.item.category?.id
+  // selectedMaterialId.value = props.item.material?.id
 })
 
 onMounted(() => {
@@ -181,7 +185,7 @@ onMounted(() => {
             <!-- Item Name -->
             <VCol
               cols="12"
-              md="6"
+              :md="props.item.id == 0 ? 6 : 12"
             >
               <VTextField
                 v-model="item.name"
@@ -192,6 +196,7 @@ onMounted(() => {
 
             <!-- Item Stock -->
             <VCol
+              v-if="props.item.id == 0"
               cols="12"
               md="6"
             >

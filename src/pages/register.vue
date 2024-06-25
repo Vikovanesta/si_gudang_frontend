@@ -279,7 +279,7 @@ onMounted(() => {
                     :items="classOptions"
                     :item-title="'name'"
                     :item-value="'id'"
-                    :data-testid="`select-item=${classId.value.value}`"
+                    :aria-expanded="true"
                   />
                 </VCol>
 
@@ -358,6 +358,7 @@ onMounted(() => {
     </VCol>
   </VRow>
   <VSnackbar
+      id="snackbar-success"
       v-model="isSuccess"
       location="top center"
       variant="flat"

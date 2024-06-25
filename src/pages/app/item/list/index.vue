@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Item } from '@/utils/types';
 import AddEditItemDialog from '@/views/app/item/AddEditItemDialog.vue';
+import DeleteItemDialog from '@/views/app/item/DeleteItemDialog.vue';
 
 definePage({
   meta: {
@@ -68,6 +69,11 @@ const editItem = (item: Item) => {
   isEditItemDialogVisible.value = true
 } 
 
+const deleteItem = (item: Item) => {
+  currentItem.value = item
+  isDeleteItemDialogVisible.value = true
+}
+
 const debouncedFetchItems = useDebounceFn(fetchItems, 300)
 
 watch(searchQuery, () => {
@@ -95,6 +101,8 @@ onMounted(() => {
           TAMBAH ALAT
         </VBtn>
         <AddEditItemDialog v-model:isDialogVisible="isAddItemDialogVisible" @item-submitted="fetchItems" />
+        <AddEditItemDialog v-model:isDialogVisible="isEditItemDialogVisible" @item-submitted="fetchItems" :item="currentItem" />
+        <DeleteItemDialog v-model:isDialogVisible="isDeleteItemDialogVisible" @item-deleted="fetchItems" :id="currentItem?.id" />
 
         <!-- <VBtn
           prepend-icon="ri-delete-bin-7-line"
@@ -201,7 +209,7 @@ onMounted(() => {
             <IconBtn
               :id="`btn-delete-${item.id}`"
               size="small"
-              @click=""
+              @click="deleteItem(item)"
             >
               <VIcon icon="ri-delete-bin-7-line" color="error" size="25" />
             </IconBtn>
@@ -255,7 +263,6 @@ onMounted(() => {
       </VDataTableServer>
       <!-- !SECTION -->
     </VCard>
-    <AddEditItemDialog v-model:isDialogVisible="isEditItemDialogVisible" @item-submitted="fetchItems" :item="currentItem" />
   </section>
   <section v-else>
     <VCard>

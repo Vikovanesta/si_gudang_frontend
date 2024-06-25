@@ -24,12 +24,9 @@ const props = defineProps({
 });
 
 const warehouseName = ref(props.warehouse.name);
-const materialName = ref(props.material.name);
 const category = ref(props.category.name);
 const isInCart = ref(props.is_in_cart);
 const isLoading = ref<boolean>(false)
-
-console.log('maxStock:', props.max_stock);
 
 const addToCart = async () => {
   isLoading.value = true
