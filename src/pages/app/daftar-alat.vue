@@ -15,7 +15,7 @@ const pagination = ref<any>(null)
 const fetchItems = async (page = 1) => {
   isLoading.value = true
   try {
-    const response = await axios.get('/items?page_size=6&page=' + page)
+    const response = await axios.get('/items?page_size=8&page=' + page)
     items.value = response.data.data
     pagination.value = response.data.meta
     console.log('Response: ', response)

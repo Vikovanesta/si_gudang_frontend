@@ -41,13 +41,13 @@ const headers = [
 const items = ref<Item[]>([])
 const totalItems = ref(0)
 
-const fetchItems = async (page = 1) => {
+const fetchItems = async () => {
   try {
     const response = await axios.get('/items', {
       params: {
         q: searchQuery.value,
         page_size: itemsPerPage.value,
-        page: page,
+        page: page.value,
         sort_by: sortBy.value,
         sort_direction: orderBy.value,
       }
@@ -55,11 +55,18 @@ const fetchItems = async (page = 1) => {
     items.value = response.data.data
     totalItems.value = response.data.meta.total
     console.log('items: ', items)
-    console.log('page: ', page)
+    console.log('page: ', page.value)
   } catch (error) {
     console.error('Failed to fetch items:', error)
   }
 }
+
+const currentItem = ref<Item>()
+
+const editItem = (item: Item) => {
+  currentItem.value = item
+  isEditItemDialogVisible.value = true
+} 
 
 const debouncedFetchItems = useDebounceFn(fetchItems, 300)
 
@@ -186,7 +193,7 @@ onMounted(() => {
             <IconBtn
               :id="`btn-edit-${item.id}`"
               size="small"
-              @click=""
+              @click="editItem(item)"
             >
               <VIcon icon="ri-pencil-line" color="primary" size="25" />
             </IconBtn>
@@ -248,6 +255,7 @@ onMounted(() => {
       </VDataTableServer>
       <!-- !SECTION -->
     </VCard>
+    <AddEditItemDialog v-model:isDialogVisible="isEditItemDialogVisible" @item-submitted="fetchItems" :item="currentItem" />
   </section>
   <section v-else>
     <VCard>

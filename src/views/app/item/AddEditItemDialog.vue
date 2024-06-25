@@ -29,6 +29,9 @@ const emit = defineEmits<Emit>()
 const item = ref<Item>(structuredClone(toRaw(props.item)))
 const image = ref<File | null>(null)
 const isSubmitting = ref(false)
+const selectedWarehouseId = ref<number>(props.item.warehouse?.id)
+const selectedCategoryId = ref<number>(props.item.category?.id)
+const selectedMaterialId = ref<number>(props.item.material?.id)
 
 const resetForm = () => {
   emit('update:isDialogVisible', false)
@@ -51,9 +54,9 @@ const addItem = async () => {
   const formData = new FormData();
   formData.append('name', item.value.name);
   formData.append('max_stock', String(item.value.max_stock));
-  if (item.value.warehouse) formData.append('warehouse_id', String(item.value.warehouse));
-  if (item.value.category) formData.append('category_id', String(item.value.category));
-  if (item.value.material) formData.append('material_id', String(item.value.material));
+  if (item.value.warehouse) formData.append('warehouse_id', String(selectedWarehouseId.value));
+  if (item.value.category) formData.append('category_id', String(selectedCategoryId.value));
+  if (item.value.material) formData.append('material_id', String(selectedMaterialId.value));
   if (image.value) formData.append('image', image.value);
   try {
     await axios.post('/items', formData, {
@@ -76,12 +79,12 @@ const updateItem = async () => {
   const formData = new FormData();
   formData.append('name', item.value.name);
   formData.append('max_stock', String(item.value.max_stock));
-  if (item.value.warehouse) formData.append('warehouse_id', String(item.value.warehouse));
-  if (item.value.category) formData.append('category_id', String(item.value.category));
-  if (item.value.material) formData.append('material_id', String(item.value.material));
+  if (item.value.warehouse) formData.append('warehouse_id', String(selectedWarehouseId.value));
+  if (item.value.category) formData.append('category_id', String(selectedCategoryId.value));
+  if (item.value.material) formData.append('material_id', String(selectedMaterialId.value));
   if (image.value) formData.append('image', image.value);
   try {
-    await axios.put(`/items/${item.value.id}`, formData, {
+    await axios.post(`/items/${item.value.id}?_method=PUT`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -130,10 +133,19 @@ const fetchWarehouses = async () => {
   }
 }
 
+watch(() => props.item, (value) => {
+  item.value = structuredClone(toRaw(value))
+  selectedWarehouseId.value = value.warehouse?.id
+  selectedCategoryId.value = value.category?.id
+  selectedMaterialId.value = value.material?.id
+})
+
 onMounted(() => {
   fetchMaterials()
   fetchCategories()
   fetchWarehouses()
+  console.log('Item: ', item.value)
+  console.log('Props: ', props.item)
 })
 
 </script>
@@ -163,10 +175,10 @@ onMounted(() => {
           </h4>
         </div>
 
-        <!-- 👉 Form -->
+        <!-- Form -->
         <VForm @submit.prevent="onFormSubmit">
           <VRow>
-            <!-- 👉 First Name -->
+            <!-- Item Name -->
             <VCol
               cols="12"
               md="6"
@@ -178,7 +190,7 @@ onMounted(() => {
               />
             </VCol>
 
-            <!-- 👉 Last Name -->
+            <!-- Item Stock -->
             <VCol
               cols="12"
               md="6"
@@ -192,12 +204,11 @@ onMounted(() => {
               />
             </VCol>
 
-            <!-- 👉 Select country -->
-
+            <!-- Select Material -->
             <VCol cols="12">
               <VSelect
               id="select-material"
-              v-model="item.material"
+              v-model="selectedMaterialId"
               placeholder="Pilih Material"
               clearable
               clear-icon="ri-close-line"
@@ -207,10 +218,11 @@ onMounted(() => {
             />
             </VCol>
 
+            <!-- Select Category -->
             <VCol cols="12">
               <VSelect
               id="select-category"
-              v-model="item.category"
+              v-model="selectedCategoryId"
               placeholder="Pilih Kategori"
               clearable
               clear-icon="ri-close-line"
@@ -220,10 +232,11 @@ onMounted(() => {
             />
             </VCol>
 
+            <!-- Select Warehouse -->
             <VCol cols="12">
               <VSelect
               id="select-warehouse"
-              v-model="item.warehouse"
+              v-model="selectedWarehouseId"
               placeholder="Pilih Gudang"
               clearable
               clear-icon="ri-close-line"
@@ -233,6 +246,7 @@ onMounted(() => {
             />
             </VCol>
             
+            <!-- Item Image -->
             <VCol cols="12">
               <VFileInput
                 label="Gambar Alat"

@@ -26,6 +26,7 @@ const fetchBorrowingRequests = async () => {
     })
     borrowingRequests.value = response.data.data
     totalBorrowingRequests.value = response.data.meta.total
+    console.log('page_size', itemsPerPage.value)
     console.log('borrowingRequests', borrowingRequests.value)
     console.log('totalBorrowingRequests', totalBorrowingRequests.value)
   } catch (error) {
@@ -91,7 +92,7 @@ watch(searchQuery, () => {
   debouncedFetchBorrowingRequests()
 })
 
-watch([selectedStatusId, page, sortBy, orderBy], () => {
+watch([selectedStatusId, page, sortBy, orderBy, itemsPerPage], () => {
   fetchBorrowingRequests()
 })
 

@@ -17,10 +17,15 @@ const props = defineProps({
     type: Object,
     default: () => ({}),
   },
+  category: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 
 const warehouseName = ref(props.warehouse.name);
 const materialName = ref(props.material.name);
+const category = ref(props.category.name);
 const isInCart = ref(props.is_in_cart);
 const isLoading = ref<boolean>(false)
 
@@ -56,11 +61,11 @@ const addToCart = async () => {
           {{ name }}
         </h5>
         <div class="text-subtitle-1" :id="`warehouse-${id}`">
-          {{ warehouseName }}
+          {{ category }}
         </div>
       </div>
       <h4 class="text-h5 font-weight-regular">
-        Material: <span class="font-weight-medium" :id="`material-${id}`">{{ materialName }}</span>
+        Lokasi: <span class="font-weight-medium" :id="`material-${id}`">{{ warehouseName }}</span>
       </h4>
       <div class="text-h5 font-weight-regular mb-3">
         Tersedia: <span class="font-weight-medium" :id="`stock-${id}`">{{ stock }}</span>

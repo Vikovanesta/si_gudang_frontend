@@ -279,6 +279,7 @@ onMounted(() => {
                     :items="classOptions"
                     :item-title="'name'"
                     :item-value="'id'"
+                    :data-testid="`select-item=${classId.value.value}`"
                   />
                 </VCol>
 
