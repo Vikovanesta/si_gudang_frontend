@@ -21,6 +21,7 @@ export default [
   {
     title: 'Gudang',
     icon: { icon: 'ri-home-6-fill' },
+    to: 'app-gudang-list',
     subject: 'Admin',
   },
   {

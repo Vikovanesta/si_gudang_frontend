@@ -21,6 +21,7 @@ declare module 'vue-router/auto-routes' {
     '$error': RouteRecordInfo<'$error', '/:error(.*)', { error: ParamValue<true> }, { error: ParamValue<false> }>,
     'access-control': RouteRecordInfo<'access-control', '/access-control', Record<never, never>, Record<never, never>>,
     'app-daftar-alat': RouteRecordInfo<'app-daftar-alat', '/app/daftar-alat', Record<never, never>, Record<never, never>>,
+    'app-gudang-list': RouteRecordInfo<'app-gudang-list', '/app/gudang/list', Record<never, never>, Record<never, never>>,
     'app-item-list': RouteRecordInfo<'app-item-list', '/app/item/list', Record<never, never>, Record<never, never>>,
     'app-item-category-list': RouteRecordInfo<'app-item-category-list', '/app/item-category/list', Record<never, never>, Record<never, never>>,
     'app-keranjang': RouteRecordInfo<'app-keranjang', '/app/keranjang', Record<never, never>, Record<never, never>>,
