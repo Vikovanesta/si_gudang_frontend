@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { Item, Material } from '@/utils/types';
+import { ItemCategory } from '@/utils/types';
 
 interface Props {
-  item?: Item
-  material?: Material
+  category?: ItemCategory
   isDialogVisible: boolean
 }
 interface Emit {
@@ -12,7 +11,7 @@ interface Emit {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  material: () => ({
+  category: () => ({
     id: 0,
     name: '',
   }),
@@ -20,33 +19,32 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emit>()
 
-const material = ref<Material>(structuredClone(toRaw(props.material)))
+const category = ref<ItemCategory>(structuredClone(toRaw(props.category)))
 const isSubmitting = ref(false)
 
 const resetForm = () => {
   emit('update:isDialogVisible', false)
-  material.value = structuredClone(toRaw(props.material))
+  category.value = structuredClone(toRaw(props.category))
 }
 
 const onFormSubmit = () => {
-  console.log('Material: ', material.value)
-  if (material.value.id > 0) {
-    updateMaterial()
+  console.log('Category: ', category.value)
+  if (category.value.id > 0) {
+    updateCategory()
   } else {
-    addMaterial()
+    addCategory()
   }
 }
 
-const addMaterial = async () => {
+const addCategory = async () => {
   isSubmitting.value = true
   try {
-    await axios.post('/materials', {
-      name: material.value.name,
-      material_category_id: 1,
+    await axios.post('/items/categories', {
+      name: category.value.name,
     })
     emit('update:isDialogVisible', false)
     emit('submitted')
-    console.log('Material added')
+    console.log('Category added')
   } catch (error) {
     console.error(error)
   } finally {
@@ -54,25 +52,26 @@ const addMaterial = async () => {
   }
 }
 
-const updateMaterial = async () => {
+const updateCategory = async () => {
   isSubmitting.value = true
   try {
-    await axios.post(`/materials/${material.value.id}?_method=PUT`, {
-      name: material.value.name,
+    await axios.post(`/items/categories/${category.value.id}?_method=PUT`, {
+      name: category.value.name,
     })
     emit('update:isDialogVisible', false)
     emit('submitted')
-    console.log('Material updated')
+    console.log('Category updated')
   } catch (error) {
     console.error(error)
   } finally {
     isSubmitting.value = false
   }
 }
+
 
 watch([props], () => {
-  if (props.material.id > 0) {
-    material.value = structuredClone(toRaw(props.material))
+  if (props.category.id > 0) {
+    category.value = structuredClone(toRaw(props.category))
   }
 })
 
@@ -85,12 +84,13 @@ watch([props], () => {
     @update:model-value="val => $emit('update:isDialogVisible', val)"
   >
     <VCard
-      v-if="props.material"
+      v-if="props.category"
       class="pa-sm-11 pa-3"
     >
       <VCardText class="pt-5">
         <!-- 👉 dialog close btn -->
         <DialogCloseBtn
+          id="btn-close"
           variant="text"
           size="default"
           @click="resetForm"
@@ -99,7 +99,7 @@ watch([props], () => {
         <!-- 👉 Title -->
         <div class="text-center mb-6">
           <h4 class="text-h4 mb-2">
-            {{ props.material.name ? 'Edit Data' : 'Tambah Data' }} Material
+            {{ props.category.name ? 'Edit Data' : 'Tambah Data' }} Kategori
           </h4>
         </div>
 
@@ -111,9 +111,10 @@ watch([props], () => {
               cols="12"
             >
               <VTextField
-                v-model="material.name"
-                label="Nama Material"
-                placeholder="Nama Material"
+                id="input-name"
+                v-model="category.name"
+                label="Nama Kategori"
+                placeholder="Nama Kategori"
               />
             </VCol>
 
@@ -123,6 +124,7 @@ watch([props], () => {
               class="text-center"
             >
             <VBtn
+                id="btn-cancel"
                 variant="outlined"
                 color="secondary"
                 class="me-3"
@@ -132,6 +134,7 @@ watch([props], () => {
               </VBtn>
 
               <VBtn
+                id="btn-submit"
                 type="submit"
                 :loading="isSubmitting"
               >

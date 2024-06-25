@@ -15,6 +15,7 @@ export default [
   {
     title: 'Kategori',
     icon: { icon: 'ri-shapes-fill' },
+    to: 'app-item-category-list',
     subject: 'Admin',
   },
   {

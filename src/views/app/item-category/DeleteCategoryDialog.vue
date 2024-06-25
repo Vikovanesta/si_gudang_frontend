@@ -1,79 +1,47 @@
 <script setup lang="ts">
-import { Item, Material } from '@/utils/types';
+import { Item } from '@/utils/types';
 
 interface Props {
-  item?: Item
-  material?: Material
+  id: number
   isDialogVisible: boolean
 }
 interface Emit {
   (e: 'update:isDialogVisible', value: boolean): void
-  (e: 'submitted'): void
+  (e: 'deleted'): void
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  material: () => ({
-    id: 0,
-    name: '',
-  }),
+  id: 0,
 })
-
+  
 const emit = defineEmits<Emit>()
 
-const material = ref<Material>(structuredClone(toRaw(props.material)))
 const isSubmitting = ref(false)
 
 const resetForm = () => {
   emit('update:isDialogVisible', false)
-  material.value = structuredClone(toRaw(props.material))
 }
 
 const onFormSubmit = () => {
-  console.log('Material: ', material.value)
-  if (material.value.id > 0) {
-    updateMaterial()
-  } else {
-    addMaterial()
-  }
+  deleteItem()
 }
 
-const addMaterial = async () => {
+const deleteItem = async () => {
   isSubmitting.value = true
   try {
-    await axios.post('/materials', {
-      name: material.value.name,
-      material_category_id: 1,
-    })
+    const response = await axios.delete(`/items/categories/${props.id}`)
+    console.log('Category deleted:', response.data)
+    emit('deleted')
     emit('update:isDialogVisible', false)
-    emit('submitted')
-    console.log('Material added')
   } catch (error) {
-    console.error(error)
+    console.error('Error deleting category:', error)
   } finally {
     isSubmitting.value = false
   }
 }
 
-const updateMaterial = async () => {
-  isSubmitting.value = true
-  try {
-    await axios.post(`/materials/${material.value.id}?_method=PUT`, {
-      name: material.value.name,
-    })
-    emit('update:isDialogVisible', false)
-    emit('submitted')
-    console.log('Material updated')
-  } catch (error) {
-    console.error(error)
-  } finally {
-    isSubmitting.value = false
-  }
-}
-
-watch([props], () => {
-  if (props.material.id > 0) {
-    material.value = structuredClone(toRaw(props.material))
-  }
+onMounted(() => {
+  console.log('Id: ', props.id)
 })
 
 </script>
@@ -85,12 +53,13 @@ watch([props], () => {
     @update:model-value="val => $emit('update:isDialogVisible', val)"
   >
     <VCard
-      v-if="props.material"
+      v-if="props.id"
       class="pa-sm-11 pa-3"
     >
       <VCardText class="pt-5">
         <!-- 👉 dialog close btn -->
         <DialogCloseBtn
+          id="btn-close"
           variant="text"
           size="default"
           @click="resetForm"
@@ -98,31 +67,28 @@ watch([props], () => {
 
         <!-- 👉 Title -->
         <div class="text-center mb-6">
-          <h4 class="text-h4 mb-2">
-            {{ props.material.name ? 'Edit Data' : 'Tambah Data' }} Material
-          </h4>
+          <h3 class="text-h3 mb-2">
+            Hapus Kategori
+          </h3>
+        </div>
+
+        <!-- Keterangan -->
+        <div class="text-center mb-6">
+          <span class="text-h6 mb-2">
+            Apakah Anda yakin ingin menghapus kategori ini?
+          </span>
         </div>
 
         <!-- Form -->
         <VForm @submit.prevent="onFormSubmit">
           <VRow>
-            <!-- Item Name -->
-            <VCol
-              cols="12"
-            >
-              <VTextField
-                v-model="material.name"
-                label="Nama Material"
-                placeholder="Nama Material"
-              />
-            </VCol>
-
             <!-- 👉 Submit and Cancel button -->
             <VCol
               cols="12"
               class="text-center"
             >
             <VBtn
+                id="btn-cancel"
                 variant="outlined"
                 color="secondary"
                 class="me-3"
@@ -132,10 +98,12 @@ watch([props], () => {
               </VBtn>
 
               <VBtn
+                id="btn-delete"
                 type="submit"
+                color="error"
                 :loading="isSubmitting"
               >
-                Simpan
+                Hapus
               </VBtn>
 
             </VCol>
