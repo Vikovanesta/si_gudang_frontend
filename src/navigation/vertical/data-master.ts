@@ -9,6 +9,7 @@ export default [
   {
     title: 'Material',
     icon: { icon: 'ri-tools-fill' },
+    to: 'app-material-list',
     subject: 'Admin',
   },
   {

@@ -23,6 +23,7 @@ declare module 'vue-router/auto-routes' {
     'app-daftar-alat': RouteRecordInfo<'app-daftar-alat', '/app/daftar-alat', Record<never, never>, Record<never, never>>,
     'app-item-list': RouteRecordInfo<'app-item-list', '/app/item/list', Record<never, never>, Record<never, never>>,
     'app-keranjang': RouteRecordInfo<'app-keranjang', '/app/keranjang', Record<never, never>, Record<never, never>>,
+    'app-material-list': RouteRecordInfo<'app-material-list', '/app/material/list', Record<never, never>, Record<never, never>>,
     'app-pengajuan-akun-list': RouteRecordInfo<'app-pengajuan-akun-list', '/app/pengajuan-akun/list', Record<never, never>, Record<never, never>>,
     'app-permintaan-peminjaman-detail': RouteRecordInfo<'app-permintaan-peminjaman-detail', '/app/permintaan-peminjaman/detail', Record<never, never>, Record<never, never>>,
     'app-permintaan-peminjaman-detail-id': RouteRecordInfo<'app-permintaan-peminjaman-detail-id', '/app/permintaan-peminjaman/detail/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
