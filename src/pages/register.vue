@@ -30,9 +30,9 @@ const items = [
 
 const schemas = [
   yup.object({
-    email: yup.string().email('Harus berupa e-mail yang valid.').required('Email wajib diisi.'),
-    phone: yup.string().matches(/^[0-9]+$/, 'Nomor telepon hanya boleh terdiri dari angka.').min(9, 'Nomor telepon harus terdiri dari minimal 9 digit.').required('Nomor telepon wajib diisi.'),
-    password: yup.string().min(8, 'Kata sandi harus terdiri dari minimal 8 karakter.').required('Kata sandi wajib diisi.'),
+    email: yup.string().required('Email wajib diisi.').email('Harus berupa e-mail yang valid.'),
+    phone: yup.string().required('Nomor telepon wajib diisi.').matches(/^[0-9]+$/, 'Nomor telepon hanya boleh terdiri dari angka.').min(9, 'Nomor telepon harus terdiri dari minimal 9 digit.'),
+    password: yup.string().required('Kata sandi wajib diisi.').min(8, 'Kata sandi harus terdiri dari minimal 8 karakter.'),
     confirm_password: yup.string().oneOf([yup.ref('password')], 'Konfirmasi kata sandi tidak sesuai.').required('Konfirmasi kata sandi wajib diisi.'),
   }),
   yup.object({
@@ -40,7 +40,7 @@ const schemas = [
     nisn: yup.string().required('NISN wajib diisi.'),
     class_id: yup.string().required('Kelas wajib dipilih.'),
     date_of_birth: yup.date().required('Tanggal lahir wajib diisi.'),
-    year_in: yup.number().min(1900, 'Tahun masuk minimal adalah 1900.').required('Tahun masuk wajib diisi.'),
+    year_in: yup.number().required('Tahun masuk wajib diisi.').min(1900, 'Tahun masuk minimal adalah 1900.'),
   }),
 ]
 

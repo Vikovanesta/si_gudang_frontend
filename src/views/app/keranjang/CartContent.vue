@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CartItem } from '@/utils/types';
+import { CartItem, SchoolSubject } from '@/utils/types';
 import tabsConsole from '@images/cards/tabs-console.png';
 import emptyCartImg from '@images/pages/empty-cart.png';
 import { format } from 'date-fns';
@@ -15,16 +15,9 @@ const formRef = ref<any>(null);
 const purpose = ref('');
 const borrowDate = ref('');
 const returnDate = ref('');
-const selectedSubject = ref({ id: null, name: 'Mata Pelajaran' });
+const selectedSubject = ref<SchoolSubject | null>(null);
+const schoolSubjects = ref<SchoolSubject[]>([]);
 
-const schoolSubjects = [
-  { id: null, name: 'Tidak ada' },
-  { id: 1, name: 'Database' },
-  { id: 2, name: 'Algoritma dan Struktur Data' },
-  { id: 3, name: 'Test' },
-  { id: 4, name: 'tes2' },
-  { id: 5, name: 'ok' },
-];
 
 const router = useRouter();
 
@@ -56,11 +49,13 @@ const sendRequest = async () => {
       quantity: item.quantity || 1,
     })))
 
+
     const response = await axios.post('/borrowing-requests', {
       purpose: purpose.value,
       start_date: format(new Date(borrowDate.value), 'yyyy-MM-dd HH:mm:ss'),
       end_date: format(new Date(returnDate.value), 'yyyy-MM-dd HH:mm:ss'),
       borrowed_items: borrowedItems,
+      school_subject_id: selectedSubject.value?.id,
     });
 
     console.log('Response:', response.data);
@@ -69,40 +64,51 @@ const sendRequest = async () => {
       isSuccess.value = true; // Set success message
     }
 
-  } catch (error) {
-    console.error('Error:', error);
+  } catch (err) {
+    console.error('Error:', err)
     // Handle error and possibly show error message
   } finally {
-    isSubmitting.value = false;
+    isSubmitting.value = false
   }
-};
+}
 
-const cartLength = computed(() => cartItems.value.length);
+const cartLength = computed(() => cartItems.value.length)
 
 const fetchCartItems = async () => {
-  isLoading.value = true;
+  isLoading.value = true
   try {
     const response = await axios.get('/me/carts');
     cartItems.value = response.data.data.map((item: any) => ({
       ...item,
       quantity: 1,
-    }));
-    console.log('Cart items:', cartItems.value);
+    }))
+    console.log('Cart items:', cartItems.value)
   } catch (error) {
-    console.error('Failed to fetch items:', error);
+    console.error('Failed to fetch items:', error)
     // Handle error fetching cart items
   } finally {
-    isLoading.value = false;
+    isLoading.value = false
   }
-};
+}
+
+const fetchClasses = async () => {
+  try {
+    const response = await axios.get('/subjects');
+    schoolSubjects.value = response.data.data;
+  } catch (error) {
+    console.error('Failed to fetch classes:', error);
+    // Handle error fetching classes
+  }
+}
 
 const goBack = () => {
-  router.go(-1);
-};
+  router.go(-1)
+}
 
 onMounted(() => {
-  fetchCartItems();
-});
+  fetchCartItems()
+  fetchClasses()
+})
 </script>
 
 <template>
@@ -144,7 +150,7 @@ onMounted(() => {
             <div>
               <VImg
                 width="140"
-                :src="cartItem.item.image_url || tabsConsole"
+                :src="cartItem.item?.image_url || tabsConsole"
               />
             </div>
 
@@ -154,19 +160,19 @@ onMounted(() => {
             >
               <div>
                 <h6 class="text-h6 mb-2" :id="`name-${cartItem.id}`">
-                  {{ cartItem.item.name }}
+                  {{ cartItem.item?.name }}
                 </h6>
                 <div class="d-flex align-center text-no-wrap gap-4 text-base">
                   <div>
                     <span class="text-disabled me-2">Tersedia:</span>
-                    <span class="text-primary">{{ cartItem.item.stock }}</span>
+                    <span class="text-primary">{{ cartItem.item?.stock }}</span>
                   </div>
                   <VChip
                     :id="`warehouse-${cartItem.id}`"
                     :color="'success'"
                     size="small"
                   >
-                    {{ cartItem.item.warehouse.name }}
+                    {{ cartItem.item?.warehouse.name }}
                   </VChip>
                 </div>
 
@@ -193,7 +199,7 @@ onMounted(() => {
                   :class="$vuetify.display.smAndUp ? 'gap-4' : 'gap-2'"
                 >
                   <p class="text-base mb-0" :id="`material-${cartItem.id}`">
-                    <span>Material: {{ cartItem.item.material.name }}</span>
+                    <span>Material: {{ cartItem.item?.material.name }}</span>
                   </p>
                 </div>
               </div>
@@ -286,13 +292,13 @@ onMounted(() => {
               id="select-subject"
               v-model="selectedSubject"
               :items="schoolSubjects"
-              item-title="name"
-              item-value="id"
+              :item-title="'name'"
+              :item-value="'id'"
               label="Mata Pelajaran"
               return-object
               single-line
-              placeholder="Select State"
-              persistent-placeholder
+              clearable
+              placeholder="Mata pelajaran"
               class="my-4"
             />
 
