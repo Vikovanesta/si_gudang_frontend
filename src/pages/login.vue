@@ -37,6 +37,7 @@ const ability = useAbility()
 const errors = ref<Record<string, string | undefined>>({
   email: undefined,
   password: undefined,
+  message: undefined,
 })
 
 const refVForm = ref<VForm>()
@@ -56,7 +57,6 @@ const login = async () => {
     };
 
     const res = await axios.post('/login', body);
-    
 
     const data = res.data.data
     const accessToken = data.token
@@ -98,7 +98,11 @@ const login = async () => {
     })
   }
   catch (err) {
-    console.error(err)
+    if (err.response && err.response.data && err.response.data.errors) {
+      errors.value.message = err.response.data.errors.message
+    } else {
+      console.error(err)
+    }
   }
 }
 
@@ -237,6 +241,17 @@ const onSubmit = () => {
                 >
                   Masuk
                 </VBtn>
+
+                <VAlert
+                  v-if="errors.message"
+                  variant="text"
+                  color="error"
+                  density="compact"
+                  class="mt-2 d-flex justify-center align-center"
+                >
+                  {{ errors.message }}
+                </VAlert>
+
               </VCol>
 
               <!-- create account -->
