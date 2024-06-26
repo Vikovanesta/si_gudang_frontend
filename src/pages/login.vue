@@ -91,6 +91,8 @@ const login = async () => {
     useCookie('userData').value = userData
     useCookie('accessToken').value = accessToken
 
+    errors.value.message = undefined
+
     // Redirect to `to` query if exist or redirect to index route
     // ❗ nextTick is required to wait for DOM updates and later redirect
     await nextTick(() => {

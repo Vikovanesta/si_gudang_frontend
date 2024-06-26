@@ -5,6 +5,9 @@ import emptyCartImg from '@images/pages/empty-cart.png';
 import { format } from 'date-fns';
 import { useRouter } from 'vue-router';
 
+const errors = ref<Record<string, string | undefined>>({
+  message: undefined,
+})
 
 const cartItems = ref<CartItem[]>([]);
 const isLoading = ref<boolean>(false);
@@ -17,7 +20,6 @@ const borrowDate = ref('');
 const returnDate = ref('');
 const selectedSubject = ref<SchoolSubject | null>(null);
 const schoolSubjects = ref<SchoolSubject[]>([]);
-
 
 const router = useRouter();
 
@@ -61,12 +63,16 @@ const sendRequest = async () => {
     console.log('Response:', response.data);
 
     if (response.status === 201) {
-      isSuccess.value = true; // Set success message
+      isSuccess.value = true; 
+      errors.value.message = undefined
     }
 
   } catch (err) {
-    console.error('Error:', err)
-    // Handle error and possibly show error message
+    if (err.response && err.response.data && err.response.data.message) {
+      errors.value.message = err.response.data.message
+    } else {
+      console.error(err)
+    }
   } finally {
     isSubmitting.value = false
   }
@@ -339,6 +345,15 @@ onMounted(() => {
         <p class="mb-0">
           Berhasil mengajukan peminjaman barang
         </p>
+      </VAlert>
+      <VAlert
+        v-if="errors.message"
+        variant="text"
+        color="error"
+        density="compact"
+        class="mt-2 d-flex justify-center align-center"
+      >
+        {{ errors.message }}
       </VAlert>
     </VForm>
     </VCol>
