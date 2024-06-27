@@ -20,7 +20,7 @@ jobs:
         run: npm run build
 
       - name: Deploy to VPS
-        uses: easingthemes/ssh-deploy@v2.2.13
+        uses: easingthemes/ssh-deploy@main
         with:
           server_ip: ${{ secrets.SERVER_IP }}
           server_username: ${{ secrets.SERVER_USERNAME }}
