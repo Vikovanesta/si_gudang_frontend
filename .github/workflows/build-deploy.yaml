@@ -22,12 +22,10 @@ jobs:
       - name: Deploy to VPS
         uses: easingthemes/ssh-deploy@main
         with:
-          server_ip: ${{ secrets.SERVER_IP }}
-          server_username: ${{ secrets.SERVER_USERNAME }}
-          local_path: ./dist  # Replace with your build output directory
-          remote_path: /var/www/html/si_gudang_frontend
-          args: "-rltgoDzvO --delete"
-
-        env:
+          REMOTE_HOST: ${{ secrets.SERVER_IP }}
+          REMOTE_USER: ${{ secrets.SERVER_USERNAME }}
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SOURCE: dist/
+          TARGET: ${{ secrets.SERVER_TARGET }}
+          ARGS: "-rltgoDzvO -i --delete"
 
