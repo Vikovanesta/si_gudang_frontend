@@ -1,0 +1,33 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main 
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to VPS
+        uses: easingthemes/ssh-deploy@v2.2.13
+        with:
+          server_ip: ${{ secrets.SERVER_IP }}
+          server_username: ${{ secrets.SERVER_USERNAME }}
+          local_path: ./dist  # Replace with your build output directory
+          remote_path: /var/www/html/si_gudang_frontend
+          args: "-rltgoDzvO --delete"
+
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
