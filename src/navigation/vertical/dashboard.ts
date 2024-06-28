@@ -27,6 +27,7 @@ export default [
   {
     title: 'Riwayat Peminjaman',
     icon: { icon: 'ri-history-fill' },
+    to: 'app-riwayat-peminjaman-list',
     subject: 'Laboran',
   },
   {

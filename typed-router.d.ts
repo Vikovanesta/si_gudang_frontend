@@ -33,6 +33,8 @@ declare module 'vue-router/auto-routes' {
     'app-permintaan-peminjaman-detail': RouteRecordInfo<'app-permintaan-peminjaman-detail', '/app/permintaan-peminjaman/detail', Record<never, never>, Record<never, never>>,
     'app-permintaan-peminjaman-detail-id': RouteRecordInfo<'app-permintaan-peminjaman-detail-id', '/app/permintaan-peminjaman/detail/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'app-permintaan-peminjaman-list': RouteRecordInfo<'app-permintaan-peminjaman-list', '/app/permintaan-peminjaman/list', Record<never, never>, Record<never, never>>,
+    'app-riwayat-peminjaman-detail-id': RouteRecordInfo<'app-riwayat-peminjaman-detail-id', '/app/riwayat-peminjaman/detail/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
+    'app-riwayat-peminjaman-list': RouteRecordInfo<'app-riwayat-peminjaman-list', '/app/riwayat-peminjaman/list', Record<never, never>, Record<never, never>>,
     'app-status-pengajuan-alat-detail': RouteRecordInfo<'app-status-pengajuan-alat-detail', '/app/status-pengajuan-alat/detail', Record<never, never>, Record<never, never>>,
     'app-status-pengajuan-alat-detail-id': RouteRecordInfo<'app-status-pengajuan-alat-detail-id', '/app/status-pengajuan-alat/detail/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     'app-status-pengajuan-alat-list': RouteRecordInfo<'app-status-pengajuan-alat-list', '/app/status-pengajuan-alat/list', Record<never, never>, Record<never, never>>,
