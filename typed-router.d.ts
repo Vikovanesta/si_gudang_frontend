@@ -29,6 +29,8 @@ declare module 'vue-router/auto-routes' {
     'app-item-category-list': RouteRecordInfo<'app-item-category-list', '/app/item-category/list', Record<never, never>, Record<never, never>>,
     'app-keranjang': RouteRecordInfo<'app-keranjang', '/app/keranjang', Record<never, never>, Record<never, never>>,
     'app-material-list': RouteRecordInfo<'app-material-list', '/app/material/list', Record<never, never>, Record<never, never>>,
+    'app-me-riwayat-peminjaman-detail-id': RouteRecordInfo<'app-me-riwayat-peminjaman-detail-id', '/app/me/riwayat-peminjaman/detail/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
+    'app-me-riwayat-peminjaman-list': RouteRecordInfo<'app-me-riwayat-peminjaman-list', '/app/me/riwayat-peminjaman/list', Record<never, never>, Record<never, never>>,
     'app-pengajuan-akun-list': RouteRecordInfo<'app-pengajuan-akun-list', '/app/pengajuan-akun/list', Record<never, never>, Record<never, never>>,
     'app-permintaan-peminjaman-detail': RouteRecordInfo<'app-permintaan-peminjaman-detail', '/app/permintaan-peminjaman/detail', Record<never, never>, Record<never, never>>,
     'app-permintaan-peminjaman-detail-id': RouteRecordInfo<'app-permintaan-peminjaman-detail-id', '/app/permintaan-peminjaman/detail/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,

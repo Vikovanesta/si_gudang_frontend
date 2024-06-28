@@ -15,6 +15,7 @@ export default [
   {
     title: 'Riwayat Peminjaman',
     icon: { icon: 'ri-time-fill' },
+    to: 'app-me-riwayat-peminjaman-list',
     subject: 'Academic',
   },
 
