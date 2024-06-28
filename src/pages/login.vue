@@ -71,7 +71,7 @@ const login = async () => {
     if (userData.role.name == 'admin') {
       userAbilityRules = [{
         'action': 'manage',
-        'subject': 'all',
+        'subject': 'Admin',
       }]
     } else if (userData.role.name == 'teacher' || userData.role.name == 'student') {
       userAbilityRules = [{
