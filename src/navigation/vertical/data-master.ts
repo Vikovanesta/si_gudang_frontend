@@ -1,5 +1,8 @@
 export default [
-  { heading: 'Data Master' },
+  { 
+    heading: 'Data Master',
+    subject: 'Admin',
+  },
   {
     title: 'Alat',
     icon: { icon: 'ri-hammer-fill' },

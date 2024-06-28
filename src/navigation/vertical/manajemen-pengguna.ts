@@ -1,5 +1,8 @@
 export default [
-  { heading: 'Manajemen Pengguna' },
+  { 
+    heading: 'Manajemen Pengguna',
+    subject: 'Admin',
+  },
   {
     title: 'Laboran',
     icon: { icon: 'ri-flask-fill' },

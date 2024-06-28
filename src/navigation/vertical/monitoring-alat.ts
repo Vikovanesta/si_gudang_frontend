@@ -1,5 +1,8 @@
 export default [
-  { heading: 'Monitoring Alat' },
+  { 
+    heading: 'Monitoring Alat',
+    subject: 'Admin',
+  },
   {
     title: 'Data Peminjaman',
     icon: { icon: 'ri-history-fill' },
