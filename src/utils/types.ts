@@ -125,9 +125,14 @@ export interface BorrowedItem {
   returned_quantity: number;
   borrowed_at: string;
   returned_at: string;
+  start_date: string;
+  end_date: string;
+  purpose: string;
   is_cancelled: boolean;
   status: BorrowingStatus;
   item: Item;
+  subject: SchoolSubject;
+  borrower: User;
 }
 
 export interface BorrowingStatus {

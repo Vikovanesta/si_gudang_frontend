@@ -3,6 +3,7 @@ export default [
   {
     title: 'Data Peminjaman',
     icon: { icon: 'ri-history-fill' },
+    to: 'app-data-peminjaman-list',
     subject: 'Admin',
   },
   {

@@ -115,7 +115,7 @@ onMounted(() => {
             <VTextField
               id="search"
               v-model="searchQuery"
-              placeholder="Search Invoice"
+              placeholder="Search"
             />
           </div>
 
@@ -270,7 +270,7 @@ onMounted(() => {
   </section>
   <section v-else>
     <VCard>
-      <VCardTitle>No Invoice Found</VCardTitle>
+      <VCardTitle>Permintaan Peminjaman Tidak Ditemukan</VCardTitle>
     </VCard>
   </section>
 </template>
