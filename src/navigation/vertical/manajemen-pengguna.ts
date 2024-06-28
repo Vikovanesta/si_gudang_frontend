@@ -21,7 +21,7 @@ export default [
   {
     title: 'Konfirmasi Akun Siswa',
     icon: { icon: 'ri-user-add-fill' },
-    to: 'app-pengajuan-akun-list',
+    to: 'app-konfirmasi-akun-list',
     subject: 'Admin',
   },
 ]
