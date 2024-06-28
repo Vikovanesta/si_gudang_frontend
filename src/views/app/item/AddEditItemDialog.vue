@@ -29,11 +29,16 @@ const emit = defineEmits<Emit>()
 const item = ref<Item>(structuredClone(toRaw(props.item)))
 const image = ref<File | null>(null)
 const isSubmitting = ref(false)
-const selectedWarehouseId = ref<number>(props.item.warehouse?.id)
-const selectedCategoryId = ref<number>(props.item.category?.id)
-const selectedMaterialId = ref<number>(props.item.material?.id)
+const selectedWarehouseId = ref<number>(item.value.warehouse?.id)
+const selectedCategoryId = ref<number>(item.value.category?.id)
+const selectedMaterialId = ref<number>(item.value.material?.id)
+
 
 const resetForm = () => {
+  console.log('item: ', item.value)
+  console.log('Selected Warehouse ID: ', selectedWarehouseId.value)
+  console.log('Selected Category ID: ', selectedCategoryId.value)
+  console.log('Selected Material ID: ', selectedMaterialId.value)
   emit('update:isDialogVisible', false)
   item.value = structuredClone(toRaw(props.item))
 }
@@ -139,6 +144,10 @@ watch([props], () => {
   if (props.item.id > 0) {
     item.value = structuredClone(toRaw(props.item))
   }
+  selectedCategoryId.value = item.value.category?.id
+  selectedMaterialId.value = item.value.material?.id
+  selectedWarehouseId.value = item.value.warehouse?.id
+  
   // selectedWarehouseId.value = props.item.warehouse?.id
   // selectedCategoryId.value = props.item.category?.id
   // selectedMaterialId.value = props.item.material?.id
